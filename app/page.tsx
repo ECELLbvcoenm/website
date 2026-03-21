@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { pastEvents } from "../lib/events";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Terminal } from "lucide-react";
@@ -9,7 +10,7 @@ import { ArrowRight, Terminal } from "lucide-react";
 export default function Home() {
   const [members, setMembers] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
-  const [filter, setFilter] = useState<"upcoming" | "past">("upcoming");
+  const [filter, setFilter] = useState<"upcoming" | "past">("past");
 
   useEffect(() => {
     async function fetchData() {
@@ -17,18 +18,26 @@ export default function Home() {
         .from("members")
         .select("*")
         .order("rank", { ascending: true });
-      const { data: evs } = await supabase
-        .from("events")
-        .select("*")
-        .order("date", { ascending: false });
+        
       setMembers(mems || []);
-      setEvents(evs || []);
+      
+      // Load static local events mapping their custom fields directly to the display logic
+      const mappedEvents = pastEvents.map(e => ({
+        ...e,
+        category: e.type,
+        description: e.shortDescription,
+      }));
+      setEvents(mappedEvents);
     }
     fetchData();
   }, []);
 
   const filteredEvents = events.filter((event) => {
-    const isPast = new Date(event.date) < new Date();
+    // Extract month and year from strings like "12th, 13th & 15th February 2025"
+    const monthYearMatch = event.date?.match(/[a-zA-Z]+ \d{4}/);
+    const parsedDate = monthYearMatch ? new Date(monthYearMatch[0]) : new Date(event.date);
+    const isPast = isNaN(parsedDate.getTime()) ? false : parsedDate < new Date();
+    
     return filter === "upcoming" ? !isPast : isPast;
   });
 
@@ -97,26 +106,39 @@ export default function Home() {
                 >
                   Explore Community
                 </Link>
+                <Link 
+                  href="/events" 
+                  className="border border-white/20 text-white px-8 py-4 rounded-full font-bold hover:bg-white/5 transition-all"
+                >
+                  Events Timeline
+                </Link>
               </motion.div>
             </motion.div>
 
-            {/* Right Rocket Placeholder */}
+            {/* Right Hero Logo */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="relative aspect-square w-full max-w-md mx-auto lg:max-w-none"
+              className="relative aspect-square w-full max-w-md mx-auto lg:max-w-none group"
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-white/[0.01] border border-white/10 rounded-3xl flex flex-col items-center justify-center backdrop-blur-sm overflow-hidden group">
-                {/* Simulated 3D Environment Wrapper */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:24px_24px] opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-50" />
+              <div className="absolute inset-0 border border-white/10 rounded-[3rem] overflow-hidden flex flex-col items-center justify-center backdrop-blur-sm relative z-10 bg-zinc-900/50">
+                <img 
+                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg" 
+                  alt="E-Cell Official Logo" 
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out opacity-90"
+                />
                 
-                <div className="text-center relative z-10 transition-transform duration-500 group-hover:scale-110">
-                  <div className="w-24 h-24 mx-auto border border-dashed border-white/20 rounded-full flex items-center justify-center mb-6 animate-[spin_10s_linear_infinite]">
-                    <div className="w-16 h-16 bg-white/10 rounded-full blur-md" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
+                <div className="absolute bottom-10 left-10 right-10 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full border border-white/20 flex flex-col items-center justify-center backdrop-blur-md bg-white/5 animate-pulse shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
                   </div>
-                  <p className="font-mono text-zinc-500 tracking-widest text-sm">[ 3D ROCKET RENDER ]</p>
-                  <p className="text-zinc-600 text-xs mt-2">Awaiting WebGL Injection</p>
+                  <div>
+                    <p className="font-mono text-white tracking-widest text-sm font-bold uppercase">Official Hub</p>
+                    <p className="text-blue-400 text-xs mt-1 tracking-widest uppercase">System Online</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -180,10 +202,10 @@ export default function Home() {
             Industry Partners
           </motion.h3>
           <div className="flex flex-wrap items-center justify-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-            {["NUTRIPULP", "STARBUCKS", "STARTUPNEWS", "POLYGON", "AWS"].map((partner) => (
-              <div key={partner} className="text-xl md:text-2xl font-black tracking-widest text-white hover:text-blue-400 transition-colors cursor-default">
+            {["NUTRIPULP", "STARBUCKS", "STARTUPNEWS", "iCOSMETIQUES"].map((partner) => (
+              <Link href="/sponsors" key={partner} className="text-xl md:text-2xl font-black tracking-widest text-white hover:text-blue-400 transition-colors cursor-pointer">
                 {partner}
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -235,16 +257,6 @@ export default function Home() {
 
             <div className="flex bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md w-fit">
               <button 
-                onClick={() => setFilter('upcoming')}
-                className={`px-6 py-2 rounded-full text-[10px] tracking-widest font-black transition-all ${
-                  filter === 'upcoming' 
-                  ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.6)]' 
-                  : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                TRENDING
-              </button>
-              <button 
                 onClick={() => setFilter('past')}
                 className={`px-6 py-2 rounded-full text-[10px] tracking-widest font-black transition-all ${
                   filter === 'past' 
@@ -252,7 +264,17 @@ export default function Home() {
                   : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                LEGACY
+                PAST
+              </button>
+              <button 
+                onClick={() => setFilter('upcoming')}
+                className={`px-6 py-2 rounded-full text-[10px] tracking-widest font-black transition-all ${
+                  filter === 'upcoming' 
+                  ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.6)]' 
+                  : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                UPCOMING
               </button>
             </div>
           </div>
@@ -274,10 +296,10 @@ export default function Home() {
                   <p className="text-zinc-500 text-sm leading-relaxed mb-8 flex-1">{event.description}</p>
 
                   <div className="flex items-center justify-between mt-auto">
-                    <span className="text-zinc-600 font-mono text-xs italic">{new Date(event.date).toDateString()}</span>
-                    <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 transition-all text-white">
+                    <span className="text-zinc-600 font-mono text-xs italic">{event.date}</span>
+                    <Link href={`/events/${event.id}`} className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 transition-all text-white z-10">
                       <span className="text-lg">→</span>
-                    </div>
+                    </Link>
                   </div>
                 </motion.div>
               ))}

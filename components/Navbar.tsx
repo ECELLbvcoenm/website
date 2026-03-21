@@ -5,6 +5,7 @@ export default function Navbar() {
   const NAV_LINKS = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
+    { name: "Sponsors", href: "/sponsors" },
     { name: "Community", href: "/community" },
     { name: "Members", href: "/members" },
     { name: "Join Team", href: "/join" },
@@ -16,9 +17,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo (Left) */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="text-white font-bold text-xl tracking-tight">
-              E-Cell BVCOENM
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex items-center gap-3 group">
+              <img 
+                src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg" 
+                alt="E-Cell Logo" 
+                className="w-8 h-8 rounded-full border border-white/10 group-hover:scale-110 transition-transform duration-300 object-cover"
+              />
+              <span className="text-white font-bold text-xl tracking-tight group-hover:text-blue-400 transition-colors">
+                E-Cell BVCOENM
+              </span>
             </Link>
           </div>
 

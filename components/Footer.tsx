@@ -9,17 +9,20 @@ export default function Footer() {
           {/* Left section: Large Logo */}
           <div className="md:col-span-5 flex flex-col justify-between">
             <div>
-              <h2 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 text-white">E-CELL.</h2>
+              <div className="flex items-center gap-4 mb-6">
+                <img 
+                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg" 
+                  alt="E-Cell Logo" 
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border border-white/10 object-cover"
+                />
+                <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-white">E-CELL.</h2>
+              </div>
               <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
                 Empowering the next generation of founders, builders, and visionaries at Bharati Vidyapeeth College of Engineering, Navi Mumbai.
               </p>
             </div>
             
-            <div className="mt-16 md:mt-24">
-              <p className="text-zinc-500 text-xs font-mono tracking-widest uppercase">
-                DESIGNED AND BUILT BY GANESH & AYUSH
-              </p>
-            </div>
+
           </div>
 
           {/* Right section: Links Columns */}
@@ -44,6 +47,7 @@ export default function Footer() {
                 <li><Link href="/founders" className="text-zinc-300 hover:text-white transition-colors">Founders</Link></li>
                 <li><Link href="/projects" className="text-zinc-300 hover:text-white transition-colors">Projects</Link></li>
                 <li><Link href="/resources" className="text-zinc-300 hover:text-white transition-colors">Resources</Link></li>
+                <li><Link href="/sponsors" className="text-zinc-300 hover:text-white transition-colors">Sponsors</Link></li>
               </ul>
             </div>
 
