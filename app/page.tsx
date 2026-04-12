@@ -43,9 +43,9 @@ export default function Home() {
   }, []);
 
   const filteredEvents = events.filter((event) => {
-    const monthYearMatch = event.date?.match(/[a-zA-Z]+ \d{4}/);
+    const monthYearMatch = event.date?.match(/([a-zA-Z]+) (\d{4})/);
     const parsedDate = monthYearMatch
-      ? new Date(monthYearMatch[0])
+      ? new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`)
       : new Date(event.date);
     const isPast = isNaN(parsedDate.getTime()) ? false : parsedDate < new Date();
     return filter === "upcoming" ? !isPast : isPast;
@@ -136,13 +136,7 @@ export default function Home() {
                 >
                   Join Team <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link
-                  href="/community"
-                  className="px-8 py-4 rounded-full font-bold transition-all hover:scale-105 glass"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Explore Community
-                </Link>
+
                 <Link
                   href="/events"
                   className="px-8 py-4 rounded-full font-bold transition-all hover:scale-105 glass"

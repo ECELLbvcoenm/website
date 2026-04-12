@@ -36,13 +36,21 @@ export default function MembersPage() {
 
         if (error) {
           console.warn("Notice: Database unreachable for members", error);
-          setMembers(LOCAL_MEMBERS);
+          setMembers(LOCAL_MEMBERS.sort((a, b) => (a.rank || 999) - (b.rank || 999)));
         } else {
-          setMembers([...(data || []), ...LOCAL_MEMBERS]);
+          const combined = [...(data || []), ...LOCAL_MEMBERS];
+          const EXCLUDED_NAMES = ["Vaibhav Dhepe", "Ganesh Wadhe"];
+          
+          // Filter out excluded members and those who might be duplicates
+          const filtered = combined.filter(m => !EXCLUDED_NAMES.includes(m.name));
+          
+          // Sort by rank to ensure consistent team ordering
+          const sorted = filtered.sort((a, b) => (a.rank || 999) - (b.rank || 999));
+          setMembers(sorted);
         }
       } catch (err) {
         console.warn("Unexpected database error:", err);
-        setMembers(LOCAL_MEMBERS);
+        setMembers(LOCAL_MEMBERS.sort((a, b) => (a.rank || 999) - (b.rank || 999)));
       } finally {
         setIsLoading(false);
       }

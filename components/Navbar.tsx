@@ -19,10 +19,10 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
     { name: "Sponsors", href: "/sponsors" },
-    { name: "Community", href: "/community" },
     { name: "Members", href: "/members" },
     { name: "Join Team", href: "/join" },
   ];
+
 
   return (
     <>

@@ -88,7 +88,6 @@ export default function Footer() {
               </h4>
               <ul className="space-y-4">
                 {[
-                  { name: "Community", href: "/community" },
                   { name: "Founders", href: "/founders" },
                   { name: "Projects", href: "/projects" },
                   { name: "Resources", href: "/resources" },
