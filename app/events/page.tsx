@@ -41,18 +41,28 @@ export default function EventsPage() {
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
-          className="space-y-4 mb-16"
+          className="space-y-4 mb-14 pb-14 border-b"
+          style={{ borderColor: "var(--border-primary)" }}
         >
+          <motion.p
+            variants={fadeUpVariant}
+            className="font-mono text-xs uppercase tracking-[0.24em]"
+            style={{ color: "var(--text-muted)" }}
+          >
+            Events
+          </motion.p>
           <motion.h1
             variants={fadeUpVariant}
-            className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] italic cursor-default uppercase animated-gradient-text"
+            className="text-5xl md:text-7xl font-black tracking-tight leading-[1.02]"
           >
-            Chronicles.
+            Event
+            <br />
+            <span style={{ color: "var(--text-secondary)" }}>Chronicles.</span>
           </motion.h1>
           <motion.p
             variants={fadeUpVariant}
-            className="text-lg md:text-xl max-w-2xl leading-relaxed uppercase tracking-[0.2em] font-medium"
-            style={{ color: "var(--text-muted)" }}
+            className="mt-2 text-lg md:text-2xl max-w-3xl leading-relaxed"
+            style={{ color: "var(--text-secondary)" }}
           >
             A timeline of ideas, ventures, and monumental events.
           </motion.p>
@@ -146,17 +156,12 @@ export default function EventsPage() {
                   style={{ borderTop: "1px solid var(--border-primary)" }}
                 >
                   <span
-                    className="text-xs font-bold uppercase tracking-widest transition-colors"
-                    style={{ color: "var(--text-muted)" }}
+                    className="text-xs font-bold uppercase tracking-widest transition-colors text-[var(--text-muted)] group-hover:text-[var(--text-accent)]"
                   >
                     Explore Details
                   </span>
                   <div
-                    className="h-8 w-8 rounded-full flex items-center justify-center transition-all"
-                    style={{
-                      border: "1px solid var(--border-primary)",
-                      color: "var(--text-primary)",
-                    }}
+                    className="h-8 w-8 rounded-full flex items-center justify-center transition-all border border-[var(--border-primary)] text-[var(--text-primary)] group-hover:border-[var(--accent-blue)] group-hover:text-[var(--text-accent)]"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </div>

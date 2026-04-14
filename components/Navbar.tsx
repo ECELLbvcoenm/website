@@ -117,9 +117,9 @@ export default function Navbar() {
                       onClick={() => setAuthOpen(true)}
                       className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
                       style={{
-                        background: "var(--bg-glass)",
-                        border: "1px solid var(--border-glass)",
-                        color: "var(--text-primary)",
+                        background: "var(--bg-card)",
+                        border: "1px solid var(--border-primary)",
+                        color: "var(--text-secondary)",
                       }}
                     >
                       <User className="w-4 h-4" />

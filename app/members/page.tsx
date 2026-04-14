@@ -106,17 +106,25 @@ export default function MembersPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex-1"
           >
+            <p
+              className="font-mono text-xs uppercase tracking-[0.24em] mb-4"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Members
+            </p>
             <h1
-              className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-4 uppercase"
+              className="text-5xl md:text-7xl font-black tracking-tight leading-[1.02] mb-6"
               style={{ color: "var(--text-primary)" }}
             >
-              OUR NETWORK.
+              Core
+              <br />
+              <span style={{ color: "var(--text-secondary)" }}>Network.</span>
             </h1>
             <p
-              className="text-lg md:text-xl max-w-xl"
+              className="text-lg md:text-2xl max-w-2xl leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
-              The neural network driving Bharati Vidyapeeth's entrepreneurial
+              The people driving Bharati Vidyapeeth&apos;s student entrepreneurship
               ecosystem.
             </p>
           </motion.div>

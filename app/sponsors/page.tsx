@@ -70,19 +70,22 @@ export default function SponsorsPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mb-24"
+          className="mb-16 pb-14 border-b text-left"
+          style={{ borderColor: "var(--border-primary)" }}
         >
-          <h4
-            className="font-mono text-sm tracking-[0.3em] uppercase mb-4"
-            style={{ color: "var(--text-accent)" }}
+          <p
+            className="font-mono text-xs uppercase tracking-[0.24em] mb-4"
+            style={{ color: "var(--text-muted)" }}
           >
-            Our Backers
-          </h4>
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-tight italic uppercase animated-gradient-text">
-            The Partners.
+            Sponsors
+          </p>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.02]">
+            Our
+            <br />
+            <span style={{ color: "var(--text-secondary)" }}>Partners.</span>
           </h1>
           <p
-            className="mt-6 max-w-2xl mx-auto text-lg leading-relaxed"
+            className="mt-8 max-w-3xl text-lg md:text-2xl leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
           >
             These industry leaders support our mission to cultivate
