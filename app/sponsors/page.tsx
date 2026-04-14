@@ -5,16 +5,16 @@ import Link from "next/link";
 
 const sponsors = [
   {
-    name: "Nutripulp",
-    logo: "/images/sponsors/nutripulp.png",
-    description:
-      "Providing healthy, refreshing beverages to fuel our next generation of entrepreneurs.",
-  },
-  {
     name: "Starbucks",
     logo: "/images/sponsors/starbucks.png",
     description:
       "Fueling late-night brainstorming sessions and marathon hackathons.",
+  },
+  {
+    name: "Nutripulp",
+    logo: "/images/sponsors/nutripulp.png",
+    description:
+      "Providing healthy, refreshing beverages to fuel our next generation of entrepreneurs.",
   },
   {
     name: "StartupNews",
