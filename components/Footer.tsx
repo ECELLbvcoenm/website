@@ -3,6 +3,26 @@
 import Link from "next/link";
 
 export default function Footer() {
+  const exploreLinks = [
+    { name: "About", href: "/about" },
+    { name: "Events", href: "/events" },
+    { name: "Community", href: "/community" },
+    { name: "Members", href: "/members" },
+  ];
+
+  const ecosystemLinks = [
+    { name: "Founders", href: "/founders" },
+    { name: "Projects", href: "/projects" },
+    { name: "Resources", href: "/resources" },
+    { name: "Sponsors", href: "/sponsors" },
+    { name: "Join Team", href: "/join" },
+  ];
+
+  const socialLinks = [
+    { name: "Instagram", href: "https://instagram.com/ecellbvcoenm" },
+    { name: "LinkedIn", href: "https://linkedin.com/company/ecell-bvcoenm" },
+  ];
+
   return (
     <footer
       className="mt-auto"
@@ -12,64 +32,56 @@ export default function Footer() {
         borderTop: "1px solid var(--border-primary)",
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-          {/* Left section: Large Logo */}
-          <div className="md:col-span-5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
-                  alt="E-Cell Logo"
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover"
-                  style={{ border: "1px solid var(--border-primary)" }}
-                />
-                <h2
-                  className="text-6xl md:text-8xl font-black tracking-tighter"
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-5">
+            <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
+              <img
+                src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                alt="E-Cell Logo"
+                className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform"
+                style={{ border: "1px solid var(--border-primary)" }}
+              />
+              <div>
+                <p
+                  className="text-2xl md:text-3xl font-black tracking-tight"
                   style={{ color: "var(--text-primary)" }}
                 >
-                  E-CELL.
-                </h2>
+                  E-CELL BVCOENM
+                </p>
+                <p
+                  className="text-[11px] uppercase tracking-[0.25em]"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Empowering Ideas, Igniting Ventures
+                </p>
               </div>
-              <p
-                className="text-sm max-w-sm leading-relaxed"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                Empowering the next generation of founders, builders, and
-                visionaries at Bharati Vidyapeeth College of Engineering, Navi
-                Mumbai.
-              </p>
-            </div>
+            </Link>
+
+            <p
+              className="text-sm max-w-md leading-relaxed"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Building a student-first entrepreneurial ecosystem through events,
+              mentorship, and real-world startup exposure.
+            </p>
           </div>
 
-          {/* Right section: Links Columns */}
-          <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 pt-4">
-            {/* Column 1 */}
-            <div className="space-y-6">
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="space-y-4">
               <h4
-                className="font-mono text-sm tracking-widest uppercase"
+                className="font-mono text-xs tracking-[0.2em] uppercase"
                 style={{ color: "var(--text-muted)" }}
               >
-                01 / Navigate
+                Explore
               </h4>
-              <ul className="space-y-4">
-                {[
-                  { name: "Home", href: "/" },
-                  { name: "About Us", href: "/about" },
-                  { name: "Events", href: "/events" },
-                  { name: "Join Team", href: "/join" },
-                ].map((link) => (
+              <ul className="space-y-2">
+                {exploreLinks.map((link) => (
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="transition-colors hover:translate-x-1 inline-block duration-200"
+                      className="text-sm transition-colors hover:opacity-80"
                       style={{ color: "var(--text-secondary)" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = "var(--text-accent)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "var(--text-secondary)")
-                      }
                     >
                       {link.name}
                     </Link>
@@ -78,32 +90,20 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Column 2 */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h4
-                className="font-mono text-sm tracking-widest uppercase"
+                className="font-mono text-xs tracking-[0.2em] uppercase"
                 style={{ color: "var(--text-muted)" }}
               >
-                02 / Ecosystem
+                Ecosystem
               </h4>
-              <ul className="space-y-4">
-                {[
-                  { name: "Founders", href: "/founders" },
-                  { name: "Projects", href: "/projects" },
-                  { name: "Resources", href: "/resources" },
-                  { name: "Sponsors", href: "/sponsors" },
-                ].map((link) => (
+              <ul className="space-y-2">
+                {ecosystemLinks.map((link) => (
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="transition-colors hover:translate-x-1 inline-block duration-200"
+                      className="text-sm transition-colors hover:opacity-80"
                       style={{ color: "var(--text-secondary)" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = "var(--text-accent)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "var(--text-secondary)")
-                      }
                     >
                       {link.name}
                     </Link>
@@ -112,34 +112,22 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Column 3 */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h4
-                className="font-mono text-sm tracking-widest uppercase"
+                className="font-mono text-xs tracking-[0.2em] uppercase"
                 style={{ color: "var(--text-muted)" }}
               >
-                03 / Socials
+                Social
               </h4>
-              <ul className="space-y-4">
-                {[
-                  { name: "Instagram", href: "https://instagram.com" },
-                  { name: "LinkedIn", href: "https://linkedin.com" },
-                  { name: "Twitter // X", href: "https://twitter.com" },
-                  { name: "GitHub", href: "https://github.com" },
-                ].map((link) => (
+              <ul className="space-y-2">
+                {socialLinks.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition-all hover:translate-x-1 inline-block duration-200"
+                      className="text-sm transition-colors hover:opacity-80"
                       style={{ color: "var(--text-secondary)" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = "var(--text-accent)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "var(--text-secondary)")
-                      }
                     >
                       {link.name}
                     </a>
@@ -150,22 +138,21 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div
-          className="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+          className="mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-3"
           style={{ borderTop: "1px solid var(--border-primary)" }}
         >
           <p
             className="text-xs font-mono tracking-widest"
             style={{ color: "var(--text-muted)" }}
           >
-            © 2025 E-Cell BVCOENM. All rights reserved.
+            © 2026 E-Cell BVCOENM. All rights reserved.
           </p>
           <p
             className="text-xs font-mono tracking-widest"
             style={{ color: "var(--text-muted)" }}
           >
-            SYSTEM_ONLINE // V2.0
+            SYSTEM_ONLINE // V2.1
           </p>
         </div>
       </div>
