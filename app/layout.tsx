@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
+import EventPopup from "@/components/EventPopup";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,6 +40,7 @@ export default function RootLayout({
           color: "var(--text-primary)",
         }}
       >
+        <EventPopup />
         <ThemeProvider>
           <AuthProvider>
             <Navbar />
