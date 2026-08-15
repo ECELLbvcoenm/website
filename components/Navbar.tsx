@@ -81,6 +81,22 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
+
+                {/* Individual Featured Event Button */}
+                <button
+                  onClick={() => window.dispatchEvent(new Event("open-event-popup"))}
+                  className="relative ml-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 hover:scale-105"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.2))",
+                    border: "1px solid rgba(96, 165, 250, 0.4)",
+                    color: "var(--text-accent)",
+                    boxShadow: "0 0 15px rgba(59, 130, 246, 0.25)",
+                  }}
+                  title="View Upcoming Cake Wallet Event"
+                >
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                  <span>Cake Wallet Event</span>
+                </button>
               </div>
             </div>
 
@@ -117,9 +133,9 @@ export default function Navbar() {
                       onClick={() => setAuthOpen(true)}
                       className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
                       style={{
-                        background: "var(--bg-glass)",
-                        border: "1px solid var(--border-glass)",
-                        color: "var(--text-primary)",
+                        background: "var(--bg-card)",
+                        border: "1px solid var(--border-primary)",
+                        color: "var(--text-secondary)",
                       }}
                     >
                       <User className="w-4 h-4" />
@@ -182,6 +198,23 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
+
+                {/* Mobile Featured Event Item */}
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    window.dispatchEvent(new Event("open-event-popup"));
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-bold transition-colors my-1"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))",
+                    border: "1px solid rgba(96, 165, 250, 0.3)",
+                    color: "var(--text-accent)",
+                  }}
+                >
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                  <span>Cake Wallet Event (Aug 17)</span>
+                </button>
 
                 {/* Mobile auth */}
                 <div

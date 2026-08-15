@@ -1,137 +1,188 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
-import { pastEvents } from "../lib/events";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Terminal, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, ChevronRight, Users } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { pastEvents } from "@/lib/events";
+import { LOCAL_MEMBERS } from "@/lib/localMembers";
 
-// Helper to generate member image path from name
+type Member = {
+  id: string | number;
+  name: string;
+  role: string;
+  rank?: number;
+};
+
+type EventItem = {
+  id: string;
+  title: string;
+  type: string;
+  date: string;
+  shortDescription: string;
+};
+
 function getMemberImagePath(name: string) {
   return `/images/members/${name.toLowerCase().replace(/\s+/g, "_")}.jpg`;
 }
 
-import { LOCAL_MEMBERS } from "../lib/localMembers";
+function parseEventDate(rawDate: string) {
+  const monthYearMatch = rawDate.match(/([a-zA-Z]+)\s+(\d{4})/);
+  if (monthYearMatch) {
+    return new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`);
+  }
+  return new Date(rawDate);
+}
 
 export default function Home() {
-  const [members, setMembers] = useState<any[]>([]);
-  const [events, setEvents] = useState<any[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [filter, setFilter] = useState<"upcoming" | "past">("past");
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data: mems } = await supabase
+        const { data } = await supabase
           .from("members")
-          .select("*")
-          .order("rank", { ascending: true });
+          .select("id, name, role, rank")
+          .order("rank", { ascending: true })
+          .order("name", { ascending: true });
 
-        setMembers([...(mems || []), ...LOCAL_MEMBERS]);
-      } catch (err) {
+        setMembers([...(data ?? []), ...LOCAL_MEMBERS]);
+      } catch {
         setMembers(LOCAL_MEMBERS);
       }
 
-      const mappedEvents = pastEvents.map((e) => ({
-        ...e,
-        category: e.type,
-        description: e.shortDescription,
-      }));
-      setEvents(mappedEvents);
+      setEvents(pastEvents);
     }
+
     fetchData();
   }, []);
 
-  const filteredEvents = events.filter((event) => {
-    const monthYearMatch = event.date?.match(/([a-zA-Z]+) (\d{4})/);
-    const parsedDate = monthYearMatch
-      ? new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`)
-      : new Date(event.date);
-    const isPast = isNaN(parsedDate.getTime()) ? false : parsedDate < new Date();
-    return filter === "upcoming" ? !isPast : isPast;
+  const normalizedMembers = useMemo(() => {
+    const byKey = new Map<string, Member>();
+    for (const member of members) {
+      const key = `${member.name.toLowerCase()}-${member.role.toLowerCase()}`;
+      if (!byKey.has(key)) byKey.set(key, member);
+    }
+
+    return Array.from(byKey.values()).sort((first, second) => {
+      const firstRank = first.rank ?? 999;
+      const secondRank = second.rank ?? 999;
+      return firstRank - secondRank;
+    });
+  }, [members]);
+
+  const featuredMembers = normalizedMembers.filter((member) => {
+    const normalizedRole = member.role.toLowerCase().replace(/\s+/g, " ").trim();
+    return [
+      "president",
+      "vice president",
+      "treasurer",
+      "trasursrer",
+      "joint treasurer",
+      "joint trausers",
+    ].includes(normalizedRole);
   });
 
-  const fadeUpVariant = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" as const },
-    },
-  };
+  const filteredEvents = useMemo(() => {
+    return events.filter((event) => {
+      const eventDate = parseEventDate(event.date);
+      const isPast = !Number.isNaN(eventDate.getTime()) && eventDate < new Date();
+      return filter === "upcoming" ? !isPast : isPast;
+    });
+  }, [events, filter]);
 
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
+  const pillars = [
+    {
+      id: "01",
+      title: "Incubation",
+      desc: "Helping students shape early ideas into practical and scalable startup models.",
+    },
+    {
+      id: "02",
+      title: "Network",
+      desc: "Connecting learners with founders, alumni, mentors, and industry opportunities.",
+    },
+    {
+      id: "03",
+      title: "Execution",
+      desc: "Driving action through hackathons, workshops, and real project-based learning.",
+    },
+  ];
+
+  const sponsorLogos = [
+    { name: "Nutripulp", logo: "/images/sponsors/nutripulp.png" },
+    { name: "Starbucks", logo: "/images/sponsors/starbucks.png" },
+    { name: "StartupNews", logo: "/images/sponsors/startupnews.png" },
+    { name: "iCosmetiques", logo: "/images/sponsors/icosmetiques.png" },
+  ];
+
+  const faqItems = [
+    {
+      question: "Who can join E-Cell BVCOENM?",
+      answer:
+        "Any motivated student from BVCOENM can apply. We welcome all branches and all experience levels.",
+    },
+    {
+      question: "How much time commitment is expected?",
+      answer:
+        "Most members contribute around 3 to 5 hours per week, with higher involvement during event execution windows.",
+    },
+    {
+      question: "How does the selection process work?",
+      answer:
+        "After form submission, shortlisted applicants are contacted for a short interaction round based on role and motivation.",
+    },
+    {
+      question: "When will I hear back after applying?",
+      answer:
+        "The team usually responds within 7 to 10 days depending on the active recruitment cycle.",
+    },
+    {
+      question: "What do members get from E-Cell?",
+      answer:
+        "Members get leadership exposure, execution experience, startup ecosystem access, and mentorship through projects and events.",
+    },
+  ];
 
   return (
-    <div
-      className="selection:bg-indigo-500/30 overflow-hidden"
-      style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
-    >
-      {/* ── HERO SECTION ── */}
-      <section className="relative min-h-[90vh] flex items-center pt-20">
-        {/* Animated grid background */}
-        <div className="absolute inset-0 z-0 grid-bg opacity-50" />
-
-        {/* Gradient orbs */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] rounded-full blur-[120px]" style={{ background: "var(--accent-glow)" }} />
-          <div className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[100px]" style={{ background: "rgba(99, 102, 241, 0.08)" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[140px]" style={{ background: "rgba(139, 92, 246, 0.05)" }} />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-              className="space-y-8"
-            >
-              <motion.div
-                variants={fadeUpVariant}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium glass"
+    <div style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}>
+      <section
+        className="pt-28 pb-20 border-b"
+        style={{ borderColor: "var(--border-primary)" }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <p
+                className="font-mono text-xs uppercase tracking-[0.24em] mb-6"
+                style={{ color: "var(--text-muted)" }}
               >
-                <Terminal className="w-4 h-4" style={{ color: "var(--text-accent)" }} />
-                <span style={{ color: "var(--text-secondary)" }}>
-                  E-Cell BVCOENM // V2.0
-                </span>
-              </motion.div>
+                E-Cell BVCOENM
+              </p>
 
-              <motion.h1
-                variants={fadeUpVariant}
-                className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05]"
-              >
+              <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.02]">
                 Empowering Ideas,
                 <br />
-                <span className="animated-gradient-text">
-                  Igniting Ventures.
-                </span>
-              </motion.h1>
+                <span style={{ color: "var(--text-secondary)" }}>Igniting Ventures.</span>
+              </h1>
 
-              <motion.p
-                variants={fadeUpVariant}
-                className="text-lg md:text-xl max-w-lg leading-relaxed"
+              <p
+                className="mt-8 text-lg md:text-2xl max-w-2xl leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                We are the architects of the future. Cultivating
-                entrepreneurship and building the next generation of founders.
-              </motion.p>
+                A student-first entrepreneurship ecosystem focused on learning, execution,
+                and real startup exposure.
+              </p>
 
-              <motion.div
-                variants={fadeUpVariant}
-                className="flex flex-wrap items-center gap-4 pt-4"
-              >
+              <div className="mt-10 flex flex-wrap gap-3">
                 <Link
                   href="/join"
-                  className="px-8 py-4 rounded-full font-bold transition-all flex items-center gap-2 hover:scale-105 hover:shadow-lg"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold"
                   style={{
-                    background: "var(--gradient-hero)",
-                    color: "#fff",
-                    boxShadow: "0 0 30px var(--accent-glow-strong)",
+                    background: "var(--text-primary)",
+                    color: "var(--bg-primary)",
                   }}
                 >
                   Join Team <ArrowRight className="w-4 h-4" />
@@ -139,402 +190,309 @@ export default function Home() {
 
                 <Link
                   href="/events"
-                  className="px-8 py-4 rounded-full font-bold transition-all hover:scale-105 glass"
-                  style={{ color: "var(--text-primary)" }}
+                  className="inline-flex items-center px-6 py-3 rounded-xl text-sm font-semibold border"
+                  style={{
+                    borderColor: "var(--border-primary)",
+                    color: "var(--text-primary)",
+                  }}
                 >
-                  Events Timeline
+                  Explore Events
                 </Link>
-              </motion.div>
-            </motion.div>
 
-            {/* Right Hero Logo */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="relative aspect-square w-full max-w-md mx-auto lg:max-w-none group"
-            >
+                <Link
+                  href="/community"
+                  className="inline-flex items-center px-6 py-3 rounded-xl text-sm font-semibold"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  Community Directory
+                </Link>
+              </div>
+
+              <div className="mt-12 grid grid-cols-3 gap-4 max-w-lg">
+                <div>
+                  <p className="text-3xl font-black">{normalizedMembers.length}+</p>
+                  <p className="text-xs uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
+                    Members
+                  </p>
+                </div>
+                <div>
+                  <p className="text-3xl font-black">{events.length}</p>
+                  <p className="text-xs uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
+                    Events Logged
+                  </p>
+                </div>
+                <div>
+                  <p className="text-3xl font-black">2024</p>
+                  <p className="text-xs uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
+                    Since
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
               <div
-                className="absolute inset-0 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-50"
-                style={{
-                  background: "linear-gradient(135deg, var(--accent-glow), rgba(99,102,241,0.15))",
-                }}
-              />
-              <div
-                className="absolute inset-0 rounded-[3rem] overflow-hidden flex flex-col items-center justify-center backdrop-blur-sm relative z-10 card-shine"
-                style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border-primary)",
-                }}
+                className="rounded-3xl overflow-hidden border"
+                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
               >
                 <img
                   src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
                   alt="E-Cell Official Logo"
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out opacity-90"
+                  className="w-full aspect-square object-cover"
                 />
-
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: "linear-gradient(to top, var(--bg-primary) 5%, transparent 60%)",
-                  }}
-                />
-                <div className="absolute bottom-10 left-10 right-10 flex items-center gap-4">
-                  <div
-                    className="w-12 h-12 rounded-full flex flex-col items-center justify-center backdrop-blur-md animate-pulse"
-                    style={{
-                      border: "1px solid var(--border-glass)",
-                      background: "var(--bg-glass)",
-                      boxShadow: "0 0 20px var(--accent-glow)",
-                    }}
-                  >
-                    <Sparkles className="w-5 h-5" style={{ color: "var(--accent-blue)" }} />
-                  </div>
-                  <div>
-                    <p
-                      className="font-mono tracking-widest text-sm font-bold uppercase"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      Official Hub
-                    </p>
-                    <p
-                      className="text-xs mt-1 tracking-widest uppercase"
-                      style={{ color: "var(--text-accent)" }}
-                    >
-                      System Online
-                    </p>
-                  </div>
+                <div className="p-6 border-t" style={{ borderColor: "var(--border-primary)" }}>
+                  <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "var(--text-muted)" }}>
+                    Official Hub
+                  </p>
+                  <p className="text-lg font-semibold mt-1">Building founders through action.</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── PROTOCOL SECTION ── */}
-      <section
-        className="py-24"
-        style={{
-          borderTop: "1px solid var(--border-primary)",
-          borderBottom: "1px solid var(--border-primary)",
-          background: "var(--bg-card)",
-        }}
-      >
+      <section className="py-20 border-b" style={{ borderColor: "var(--border-primary)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            <motion.h2
-              variants={fadeUpVariant}
-              className="font-mono text-xs uppercase tracking-[0.3em] mb-4"
-              style={{ color: "var(--text-accent)" }}
-            >
-              Core Directives
-            </motion.h2>
-            <motion.h3
-              variants={fadeUpVariant}
-              className="text-4xl md:text-5xl font-bold tracking-tighter mb-16"
-              style={{ color: "var(--text-primary)" }}
-            >
-              ARCHITECTS OF INNOVATION.
-            </motion.h3>
+          <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
+            Core Focus
+          </p>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-10">What We Build</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  id: "PROTOCOL_01",
-                  title: "Incubation",
-                  desc: "Nurturing barebone ideas into structured, scalable models with dedicated mentorship.",
-                },
-                {
-                  id: "PROTOCOL_02",
-                  title: "Network",
-                  desc: "Connecting visionaries with angel investors, VC firms, and industry veterans.",
-                },
-                {
-                  id: "PROTOCOL_03",
-                  title: "Innovation",
-                  desc: "Deploying deep-tech solutions through hackathons and competitive sprints.",
-                },
-              ].map((protocol) => (
-                <motion.div
-                  key={protocol.id}
-                  variants={fadeUpVariant}
-                  className="p-8 rounded-2xl transition-all group glass glass-hover glow-border card-shine"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {pillars.map((pillar) => (
+              <article
+                key={pillar.id}
+                className="rounded-2xl border p-7"
+                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+              >
+                <p className="font-mono text-xs tracking-[0.2em] mb-5" style={{ color: "var(--text-muted)" }}>
+                  PROTOCOL_{pillar.id}
+                </p>
+                <h3 className="text-3xl font-bold mb-4">{pillar.title}</h3>
+                <p className="text-lg leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                  {pillar.desc}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 border-b" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <p className="font-mono text-xs uppercase tracking-[0.24em]" style={{ color: "var(--text-muted)" }}>
+              Industry Partners
+            </p>
+            <Link href="/sponsors" className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
+              View Sponsors
+            </Link>
+          </div>
+
+          <div className="sponsor-loop-mask rounded-xl border py-4" style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}>
+            <div className="sponsor-loop-track">
+              {[...sponsorLogos, ...sponsorLogos].map((sponsor, index) => (
+                <Link
+                  key={`${sponsor.name}-${index}`}
+                  href="/sponsors"
+                  className="sponsor-loop-item"
+                  aria-label={`${sponsor.name} sponsor profile`}
                 >
-                  <span
-                    className="font-mono text-xs tracking-widest block mb-6"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    {protocol.id}
-                  </span>
-                  <h4
-                    className="text-2xl font-bold mb-4 transition-colors"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {protocol.title}
-                  </h4>
-                  <p
-                    className="leading-relaxed text-sm"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {protocol.desc}
-                  </p>
-                </motion.div>
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="h-10 w-auto object-contain"
+                  />
+                </Link>
               ))}
             </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── INDUSTRY PARTNERS ── */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h3
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="font-mono text-xs uppercase tracking-[0.3em] mb-12"
-            style={{ color: "var(--text-muted)" }}
-          >
-            Industry Partners
-          </motion.h3>
-          <div className="flex flex-wrap items-center justify-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-            {["NUTRIPULP", "STARBUCKS", "STARTUPNEWS", "iCOSMETIQUES"].map(
-              (partner) => (
-                <Link
-                  href="/sponsors"
-                  key={partner}
-                  className="text-xl md:text-2xl font-black tracking-widest transition-colors cursor-pointer"
-                  style={{ color: "var(--text-primary)" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "var(--text-accent)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "var(--text-primary)")
-                  }
-                >
-                  {partner}
-                </Link>
-              )
-            )}
           </div>
         </div>
       </section>
 
-      {/* ── PRESERVED SECTIONS (TEAM & EVENTS) ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32 space-y-32">
-        {/* THE TEAM */}
-        <section>
-          <div className="mb-12">
-            <h1
-              className="text-6xl font-black tracking-tighter italic transition-colors cursor-default"
-              style={{ color: "var(--text-primary)" }}
+      <section className="py-20 border-b" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
+                Team
+              </p>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight">Core Council</h2>
+              <p className="text-sm md:text-base font-black uppercase tracking-[0.16em] mt-3" style={{ color: "var(--text-secondary)" }}>
+                Operational Command
+              </p>
+            </div>
+            <Link
+              href="/members"
+              className="inline-flex items-center gap-2 text-sm font-semibold"
+              style={{ color: "var(--text-secondary)" }}
             >
-              THE COUNCIL.
-            </h1>
-            <p
-              className="mt-2 text-lg font-medium uppercase tracking-[0.2em]"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Operational Command
-            </p>
+              View All Members <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          <div className="flex gap-6 overflow-x-auto pb-8 pt-4 scrollbar-hide snap-x snap-mandatory">
-            {members.map((member) => (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {featuredMembers.map((member) => (
+              <article
                 key={member.id}
-                className="min-w-[280px] snap-center group relative rounded-2xl p-6 transition-all duration-500 glass glass-hover glow-border card-shine"
+                className="group rounded-2xl border border-l-2 p-4"
+                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
               >
-                <div
-                  className="aspect-square w-full rounded-xl mb-6 flex items-center justify-center text-4xl font-bold grayscale group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 overflow-hidden relative"
-                  style={{
-                    background: "var(--bg-card)",
-                    color: "var(--text-muted)",
-                  }}
-                >
+                <div className="aspect-square rounded-xl overflow-hidden mb-4 relative" style={{ background: "var(--bg-card)" }}>
                   <img
                     src={getMemberImagePath(member.name)}
                     alt={member.name}
-                    className="w-full h-full object-cover absolute inset-0 z-10"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
+                    className="absolute inset-0 h-full w-full object-cover z-10 grayscale saturate-0 opacity-85 transition-all duration-500 group-hover:grayscale-0 group-hover:saturate-100 group-hover:opacity-100"
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
                     }}
                   />
-                  <span className="z-0">{member.name?.[0]}</span>
+                  <div
+                    className="absolute inset-0 flex items-center justify-center text-3xl font-bold z-0"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    {member.name[0]?.toUpperCase()}
+                  </div>
                 </div>
-                <h3
-                  className="text-xl font-bold tracking-tight"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {member.name}
-                </h3>
-                <p
-                  className="text-xs font-black uppercase tracking-widest mt-1"
-                  style={{ color: "var(--text-accent)" }}
-                >
+                <p className="font-semibold leading-tight">{member.name}</p>
+                <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--text-secondary)" }}>
                   {member.role}
                 </p>
-              </motion.div>
+              </article>
             ))}
-            {members.length === 0 && (
-              <div
-                className="min-w-full h-[300px] flex items-center justify-center rounded-[2rem]"
-                style={{ border: "1px dashed var(--border-primary)" }}
-              >
-                <p
-                  className="italic font-mono tracking-tighter uppercase"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  // Fetching personnel records...
-                </p>
-              </div>
-            )}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* TRENDING EVENTS */}
-        <section>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
             <div>
-              <h2
-                className="text-5xl font-bold tracking-tighter"
-                style={{ color: "var(--text-primary)" }}
-              >
-                TIMELINE.
-              </h2>
-              <p
-                className="text-sm mt-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Our journey from ideas to ventures.
+              <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
+                Events
               </p>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight">Timeline</h2>
             </div>
 
-            <div
-              className="flex p-1 rounded-full backdrop-blur-md w-fit glass"
-            >
+            <div className="inline-flex rounded-xl border p-1" style={{ borderColor: "var(--border-primary)" }}>
               <button
                 onClick={() => setFilter("past")}
-                className="px-6 py-2 rounded-full text-[10px] tracking-widest font-black transition-all"
+                className="px-4 py-2 rounded-lg text-xs uppercase tracking-widest font-semibold"
                 style={{
-                  background:
-                    filter === "past"
-                      ? "var(--accent-blue)"
-                      : "transparent",
-                  color:
-                    filter === "past" ? "#fff" : "var(--text-muted)",
-                  boxShadow:
-                    filter === "past"
-                      ? "0 0 20px var(--accent-glow-strong)"
-                      : "none",
+                  background: filter === "past" ? "var(--text-primary)" : "transparent",
+                  color: filter === "past" ? "var(--bg-primary)" : "var(--text-secondary)",
                 }}
               >
-                PAST
+                Past
               </button>
               <button
                 onClick={() => setFilter("upcoming")}
-                className="px-6 py-2 rounded-full text-[10px] tracking-widest font-black transition-all"
+                className="px-4 py-2 rounded-lg text-xs uppercase tracking-widest font-semibold"
                 style={{
-                  background:
-                    filter === "upcoming"
-                      ? "var(--accent-blue)"
-                      : "transparent",
-                  color:
-                    filter === "upcoming" ? "#fff" : "var(--text-muted)",
-                  boxShadow:
-                    filter === "upcoming"
-                      ? "0 0 20px var(--accent-glow-strong)"
-                      : "none",
+                  background: filter === "upcoming" ? "var(--text-primary)" : "transparent",
+                  color: filter === "upcoming" ? "var(--bg-primary)" : "var(--text-secondary)",
                 }}
               >
-                UPCOMING
+                Upcoming
               </button>
             </div>
           </div>
 
           {filteredEvents.length > 0 ? (
-            <div className="flex gap-8 overflow-x-auto pb-12 pt-4 scrollbar-hide snap-x snap-mandatory px-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredEvents.map((event) => (
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                <article
                   key={event.id}
-                  className="min-w-[320px] md:min-w-[450px] snap-center backdrop-blur-sm rounded-[2rem] p-10 relative group transition-all duration-700 flex flex-col glass glass-hover glow-border card-shine"
+                  className="rounded-2xl border border-l-2 p-6 flex flex-col"
+                  style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
                 >
-                  <span
-                    className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 block"
-                    style={{ color: "var(--text-accent)", opacity: 0.6 }}
-                  >
-                    {event.category || "Event"}
-                  </span>
-                  <h3
-                    className="text-3xl font-bold mb-4 transition-colors"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {event.title}
-                  </h3>
-                  <p
-                    className="text-sm leading-relaxed mb-8 flex-1"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {event.description}
+                  <p className="text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "var(--text-muted)" }}>
+                    {event.type}
+                  </p>
+                  <h3 className="text-2xl font-bold leading-tight mb-3">{event.title}</h3>
+                  <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
+                    {event.shortDescription}
                   </p>
 
-                  <div className="flex items-center justify-between mt-auto">
-                    <span
-                      className="font-mono text-xs italic"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {event.date}
+                  <div className="mt-auto flex items-center justify-between text-xs" style={{ color: "var(--text-muted)" }}>
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" /> {event.date}
                     </span>
-                    <Link
-                      href={`/events/${event.id}`}
-                      className="h-8 w-8 rounded-full flex items-center justify-center transition-all z-10"
-                      style={{
-                        border: "1px solid var(--border-primary)",
-                        color: "var(--text-primary)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "var(--accent-blue)";
-                        e.currentTarget.style.borderColor = "var(--accent-blue)";
-                        e.currentTarget.style.color = "#fff";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.borderColor = "var(--border-primary)";
-                        e.currentTarget.style.color = "var(--text-primary)";
-                      }}
-                    >
-                      <span className="text-lg">→</span>
+                    <Link href={`/events/${event.id}`} className="font-semibold" style={{ color: "var(--text-primary)" }}>
+                      Details
                     </Link>
                   </div>
-                </motion.div>
+                </article>
               ))}
             </div>
           ) : (
             <div
-              className="h-[300px] flex items-center justify-center rounded-[2rem]"
-              style={{ border: "1px dashed var(--border-primary)" }}
+              className="rounded-2xl border p-10 text-center"
+              style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
             >
-              <p
-                className="italic font-mono tracking-tighter uppercase"
-                style={{ color: "var(--text-muted)" }}
-              >
-                // No {filter} events discovered in the logs...
+              <p className="text-lg font-semibold mb-2">No events found</p>
+              <p style={{ color: "var(--text-secondary)" }}>
+                Try switching filters or check the events page for the full archive.
               </p>
             </div>
           )}
-        </section>
-      </div>
+
+          <div className="mt-14 border-t pt-10" style={{ borderColor: "var(--border-primary)" }}>
+            <p className="font-mono text-xs uppercase tracking-[0.24em] mb-3" style={{ color: "var(--text-muted)" }}>
+              FAQ
+            </p>
+            <h3 className="text-3xl md:text-4xl font-black tracking-tight mb-6">Questions You Might Have</h3>
+
+            <div className="space-y-3">
+              {faqItems.map((item) => (
+                <details
+                  key={item.question}
+                  className="group rounded-xl border px-5 py-4"
+                  style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+                >
+                  <summary className="cursor-pointer font-semibold list-none flex items-center justify-between gap-3">
+                    <span>{item.question}</span>
+                    <ChevronRight className="w-4 h-4 shrink-0 transition-transform duration-300 group-open:rotate-90" style={{ color: "var(--text-muted)" }} />
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="mt-12 rounded-2xl border p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+            style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+          >
+            <div>
+              <p className="font-semibold text-xl">Ready to build with E-Cell?</p>
+              <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+                Join upcoming events, connect with the team, and start your startup journey.
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <Link
+                href="/join"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: "var(--text-primary)", color: "var(--bg-primary)" }}
+              >
+                Join Team <Users className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/events"
+                className="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-semibold border"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+              >
+                Browse Events
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
