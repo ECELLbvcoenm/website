@@ -27,7 +27,7 @@ export default function AboutPage() {
             ["Community", "A strong peer network of builders and contributors."],
             ["Execution", "From ideation to validated prototypes and pitches."],
           ].map(([title, desc]) => (
-            <div key={title} className="glass rounded-2xl p-5">
+            <div key={title} className="glass rounded-lg p-5">
               <h2 className="font-bold mb-2">{title}</h2>
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                 {desc}
@@ -38,7 +38,7 @@ export default function AboutPage() {
 
         <Link
           href="/join"
-          className="inline-flex px-6 py-3 rounded-full font-semibold"
+          className="inline-flex px-6 py-3 rounded-md font-semibold text-sm transition-transform hover:-translate-y-0.5"
           style={{ background: "var(--gradient-hero)", color: "#fff" }}
         >
           Join Team

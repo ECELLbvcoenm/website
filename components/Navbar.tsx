@@ -27,7 +27,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl"
+        className="fixed top-0 left-0 w-full z-50"
         style={{
           background: "var(--bg-nav)",
           borderBottom: "1px solid var(--border-primary)",

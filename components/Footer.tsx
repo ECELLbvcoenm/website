@@ -6,7 +6,6 @@ export default function Footer() {
   const exploreLinks = [
     { name: "About", href: "/about" },
     { name: "Events", href: "/events" },
-    { name: "Community", href: "/community" },
     { name: "Members", href: "/members" },
   ];
 
@@ -152,7 +151,7 @@ export default function Footer() {
             className="text-xs font-mono tracking-widest"
             style={{ color: "var(--text-muted)" }}
           >
-            SYSTEM_ONLINE // V2.1
+            Made by students, for students.
           </p>
         </div>
       </div>

@@ -16,165 +16,103 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center"
+        className="min-h-screen flex flex-col items-center justify-center px-4"
         style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
       >
-        <h1 className="text-4xl font-black italic tracking-tighter mb-4">
-          404_NOT_FOUND
+        <h1 className="font-display text-4xl font-semibold tracking-tight mb-3">
+          We couldn&apos;t find that event.
         </h1>
-        <p className="mb-8 font-mono" style={{ color: "var(--text-muted)" }}>
-          Event archive missing or corrupted.
+        <p className="mb-8 text-sm" style={{ color: "var(--text-muted)" }}>
+          It may have been removed, or the link is out of date.
         </p>
         <button
           onClick={() => router.back()}
-          className="px-6 py-3 rounded-full transition-all glass glass-hover"
+          className="px-6 py-3 rounded-md index-card glass-hover text-sm font-semibold"
         >
-          Return to Hub
+          Go back
         </button>
       </div>
     );
   }
 
-  const fadeUpVariant = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" as const },
-    },
+  const fadeUp = {
+    hidden: { opacity: 0, y: 16 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
   };
 
   return (
-    <div
-      className="min-h-screen selection:bg-indigo-500/30 overflow-hidden pt-32 pb-32"
-      style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
-    >
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div
-          className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] rounded-full blur-[120px]"
-          style={{ background: "var(--accent-glow)" }}
-        />
-        <div
-          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[100px]"
-          style={{ background: "rgba(99,102,241,0.05)" }}
-        />
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+    <div className="min-h-screen pt-32 pb-32" style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           href="/events"
-          className="inline-flex items-center transition-colors mb-12 font-mono text-sm uppercase tracking-widest"
+          className="inline-flex items-center transition-colors mb-12 text-sm font-medium"
           style={{ color: "var(--text-muted)" }}
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Matrix
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to events
         </Link>
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-          }}
-          className="space-y-6 mb-16"
-        >
-          <motion.div variants={fadeUpVariant} className="flex flex-wrap gap-3">
-            <span
-              className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest glass"
-              style={{ color: "var(--text-accent)" }}
-            >
-              {event.type}
-            </span>
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-14">
+          <div className="flex flex-wrap gap-3 mb-6">
+            <span className="stamp">{event.type}</span>
             {event.ref && (
-              <span
-                className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest glass"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <span className="font-data text-xs tracking-widest" style={{ color: "var(--text-muted)" }}>
                 {event.ref}
               </span>
             )}
-          </motion.div>
+          </div>
 
-          <motion.h1
-            variants={fadeUpVariant}
-            className="text-5xl md:text-6xl font-black tracking-tighter leading-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-6">
             {event.title}
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            variants={fadeUpVariant}
-            className="flex flex-wrap items-center gap-6 pt-4"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            <div className="flex items-center text-sm font-mono">
-              <Calendar className="w-5 h-5 mr-3" style={{ color: "var(--text-muted)" }} />
+          <div className="flex flex-wrap items-center gap-6" style={{ color: "var(--text-secondary)" }}>
+            <div className="flex items-center text-sm font-data">
+              <Calendar className="w-4 h-4 mr-2.5" style={{ color: "var(--text-muted)" }} />
               <span>{event.date}</span>
             </div>
-            <div className="flex items-center text-sm font-mono">
-              <Clock className="w-5 h-5 mr-3" style={{ color: "var(--text-muted)" }} />
+            <div className="flex items-center text-sm font-data">
+              <Clock className="w-4 h-4 mr-2.5" style={{ color: "var(--text-muted)" }} />
               <span>{event.time}</span>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
         {event.coverImage && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="w-full aspect-video md:aspect-[21/9] rounded-[2rem] overflow-hidden mb-16"
-            style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border-primary)",
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-full aspect-video md:aspect-[21/9] rounded-lg overflow-hidden mb-14 index-card"
           >
-            <img
-              src={event.coverImage}
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={event.coverImage} alt={event.title} className="w-full h-full object-cover" />
           </motion.div>
         )}
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="prose prose-lg max-w-none"
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          <div
-            className="p-8 md:p-12 rounded-[2rem] leading-relaxed glass"
-            style={{ color: "var(--text-secondary)" }}
-          >
+          <div className="index-card p-8 md:p-10 leading-relaxed text-[15px]" style={{ color: "var(--text-secondary)" }}>
             {event.fullDescription}
           </div>
         </motion.div>
 
         {event.gallery && event.gallery.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-20"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16"
           >
-            <h3
-              className="text-3xl font-black tracking-tighter mb-8 uppercase"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Visual Archives
-            </h3>
+            <h3 className="font-display text-2xl font-semibold tracking-tight mb-6">Photos</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {event.gallery.map((imgUrl, idx) => (
-                <div
-                  key={idx}
-                  className="aspect-video rounded-[2rem] overflow-hidden glass"
-                >
+                <div key={idx} className="aspect-video rounded-lg overflow-hidden index-card">
                   <img
                     src={imgUrl}
-                    alt={`${event.title} gallery ${idx + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    alt={`${event.title} photo ${idx + 1}`}
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}

@@ -17,23 +17,23 @@ export default function ProjectsPage() {
           Build. Ship. Improve.
         </h1>
         <p className="text-lg mb-10" style={{ color: "var(--text-secondary)" }}>
-          Project highlights are organized in our community matrix. We’re adding a
-          curated showcase view here soon.
+          We&apos;re putting together a showcase of ideas and prototypes that came out of
+          our competitions and bootcamps. Check back soon.
         </p>
 
-        <div className="glass rounded-2xl p-8 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <div className="glass rounded-lg p-8 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-bold mb-1">Live Project Directory</h2>
+            <h2 className="text-xl font-bold mb-1">In the meantime</h2>
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              Browse active categories, project status, and source links.
+              See the competitions and bootcamps where these projects started.
             </p>
           </div>
           <Link
-            href="/community"
-            className="inline-flex px-5 py-2.5 rounded-full text-sm font-semibold"
+            href="/events"
+            className="inline-flex px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
             style={{ background: "var(--gradient-hero)", color: "#fff" }}
           >
-            Open Directory
+            Browse events
           </Link>
         </div>
       </div>

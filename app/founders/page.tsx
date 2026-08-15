@@ -21,17 +21,17 @@ export default function FoundersPage() {
           ongoing ventures from the E-Cell ecosystem.
         </p>
 
-        <div className="glass rounded-2xl p-8">
+        <div className="glass rounded-lg p-8">
           <h2 className="text-xl font-bold mb-2">Profiles Coming Soon</h2>
           <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
             We are curating founder stories and startup journeys for this page.
           </p>
           <Link
-            href="/community"
-            className="inline-flex px-5 py-2.5 rounded-full text-sm font-semibold"
+            href="/members"
+            className="inline-flex px-5 py-2.5 rounded-md text-sm font-semibold transition-colors"
             style={{ background: "var(--bg-card-hover)", color: "var(--text-primary)" }}
           >
-            Explore Community Projects
+            Meet the team
           </Link>
         </div>
       </div>

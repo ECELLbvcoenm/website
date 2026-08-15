@@ -28,7 +28,7 @@ export default function ResourcesPage() {
             ["Execution Systems", "Planning templates and team operating rhythm."],
             ["Events Archive", "Recordings and key takeaways from sessions."],
           ].map(([title, desc]) => (
-            <div key={title} className="glass rounded-2xl p-5">
+            <div key={title} className="glass rounded-lg p-5">
               <h2 className="font-bold mb-2">{title}</h2>
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                 {desc}
@@ -39,7 +39,7 @@ export default function ResourcesPage() {
 
         <Link
           href="/events"
-          className="inline-flex px-6 py-3 rounded-full font-semibold"
+          className="inline-flex px-6 py-3 rounded-md font-semibold text-sm transition-transform hover:-translate-y-0.5"
           style={{ background: "var(--bg-card-hover)", color: "var(--text-primary)" }}
         >
           Browse Events
