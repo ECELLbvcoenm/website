@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { User, LogOut, Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import AuthModal from "./AuthModal";
@@ -23,11 +23,20 @@ export default function Navbar() {
     { name: "Join Team", href: "/join" },
   ];
 
-
   return (
     <>
+      {/* Ruler strip — tick marks, no functional purpose, purely a drafting-sheet signature */}
+      <div
+        className="fixed top-0 left-0 w-full z-50 h-2 hidden md:block"
+        style={{
+          background:
+            "repeating-linear-gradient(90deg, var(--border-primary) 0, var(--border-primary) 1px, transparent 1px, transparent 48px)",
+          borderBottom: "1px solid var(--border-primary)",
+        }}
+      />
+
       <nav
-        className="fixed top-0 left-0 w-full z-50"
+        className="fixed top-0 md:top-2 left-0 w-full z-50"
         style={{
           background: "var(--bg-nav)",
           borderBottom: "1px solid var(--border-primary)",
@@ -36,65 +45,59 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="flex items-center gap-3 group">
-                <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
-                  alt="E-Cell Logo"
-                  className="w-8 h-8 rounded-full group-hover:scale-110 transition-transform duration-300 object-cover"
-                  style={{ border: "1px solid var(--border-primary)" }}
-                />
-                <span
-                  className="font-bold text-xl tracking-tight group-hover:opacity-80 transition-opacity"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  E-Cell <span style={{ color: "var(--text-accent)" }}>BVCOENM</span>
-                </span>
-              </Link>
+            <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+              <img
+                src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                alt="E-Cell Logo"
+                className="w-8 h-8 object-cover"
+                style={{ border: "1px solid var(--border-primary)" }}
+              />
+              <span
+                className="font-display font-bold text-lg tracking-tight group-hover:opacity-80 transition-opacity"
+                style={{ color: "var(--text-primary)" }}
+              >
+                E-Cell <span style={{ color: "var(--text-accent)" }}>BVCOENM</span>
+              </span>
+            </Link>
+
+            {/* Desktop Links — numbered, mono, bracket underline on active */}
+            <div className="hidden md:flex items-center gap-1">
+              {NAV_LINKS.map((link, i) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="relative px-3 py-2 text-sm font-medium transition-colors flex items-baseline gap-1.5"
+                    style={{ color: isActive ? "var(--text-accent)" : "var(--text-secondary)" }}
+                  >
+                    <span className="font-data text-[10px]" style={{ color: "var(--text-muted)" }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {link.name}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active"
+                        className="absolute -bottom-0.5 left-3 right-3 h-[2px]"
+                        style={{ background: "var(--text-accent)" }}
+                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
 
-            {/* Desktop Links */}
-            <div className="hidden md:block">
-              <div className="flex items-baseline space-x-1">
-                {NAV_LINKS.map((link) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className="relative px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-                      style={{
-                        color: isActive
-                          ? "var(--text-accent)"
-                          : "var(--text-secondary)",
-                      }}
-                    >
-                      {link.name}
-                      {isActive && (
-                        <motion.div
-                          layoutId="nav-active"
-                          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full"
-                          style={{ background: "var(--accent-blue)" }}
-                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        />
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Right Side: Theme + Auth + Mobile Menu Toggle */}
+            {/* Right side */}
             <div className="flex items-center gap-2">
               <ThemeToggle />
 
-              {/* Auth button */}
               {!loading && (
                 <>
                   {user ? (
                     <div className="hidden md:flex items-center gap-2">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                        className="w-8 h-8 flex items-center justify-center text-xs font-bold font-data"
                         style={{
                           background: "var(--accent-glow)",
                           color: "var(--text-accent)",
@@ -105,8 +108,8 @@ export default function Navbar() {
                       </div>
                       <button
                         onClick={signOut}
-                        className="p-2 rounded-full transition-colors"
-                        style={{ color: "var(--text-muted)" }}
+                        className="w-9 h-9 flex items-center justify-center transition-colors"
+                        style={{ color: "var(--text-muted)", border: "1px solid var(--border-primary)" }}
                         title="Sign Out"
                       >
                         <LogOut className="w-4 h-4" />
@@ -115,10 +118,9 @@ export default function Navbar() {
                   ) : (
                     <button
                       onClick={() => setAuthOpen(true)}
-                      className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
+                      className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-colors"
                       style={{
-                        background: "var(--bg-glass)",
-                        border: "1px solid var(--border-glass)",
+                        border: "1px solid var(--border-primary)",
                         color: "var(--text-primary)",
                       }}
                     >
@@ -129,72 +131,58 @@ export default function Navbar() {
                 </>
               )}
 
-              {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-lg transition-colors"
-                style={{
-                  color: "var(--text-primary)",
-                  background: "var(--bg-glass)",
-                }}
+                className="md:hidden w-9 h-9 flex items-center justify-center transition-colors"
+                style={{ color: "var(--text-primary)", border: "1px solid var(--border-primary)" }}
               >
-                {mobileOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
               className="md:hidden overflow-hidden"
-              style={{
-                background: "var(--bg-secondary)",
-                borderTop: "1px solid var(--border-primary)",
-              }}
+              style={{ background: "var(--bg-secondary)", borderTop: "1px solid var(--border-primary)" }}
             >
               <div className="px-4 py-4 space-y-1">
-                {NAV_LINKS.map((link) => {
+                {NAV_LINKS.map((link, i) => {
                   const isActive = pathname === link.href;
                   return (
                     <Link
                       key={link.name}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+                      className="flex items-baseline gap-2 px-4 py-3 text-sm font-medium transition-colors"
                       style={{
-                        color: isActive
-                          ? "var(--text-accent)"
-                          : "var(--text-secondary)",
+                        color: isActive ? "var(--text-accent)" : "var(--text-secondary)",
                         background: isActive ? "var(--accent-glow)" : "transparent",
+                        borderLeft: isActive ? "2px solid var(--text-accent)" : "2px solid transparent",
                       }}
                     >
+                      <span className="font-data text-[10px]" style={{ color: "var(--text-muted)" }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                       {link.name}
                     </Link>
                   );
                 })}
 
-                {/* Mobile auth */}
-                <div
-                  className="pt-2 mt-2"
-                  style={{ borderTop: "1px solid var(--border-primary)" }}
-                >
+                <div className="pt-2 mt-2" style={{ borderTop: "1px solid var(--border-primary)" }}>
                   {user ? (
                     <button
                       onClick={() => {
                         signOut();
                         setMobileOpen(false);
                       }}
-                      className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium transition-colors"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       <LogOut className="w-4 h-4" />
@@ -206,7 +194,7 @@ export default function Navbar() {
                         setAuthOpen(true);
                         setMobileOpen(false);
                       }}
-                      className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium transition-colors"
                       style={{ color: "var(--text-accent)" }}
                     >
                       <User className="w-4 h-4" />
@@ -220,7 +208,6 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Auth Modal */}
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </>
   );

@@ -7,16 +7,12 @@ export default function AboutPage() {
       style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <div className="max-w-4xl mx-auto">
-        <p
-          className="font-mono text-xs tracking-[0.25em] uppercase mb-4"
-          style={{ color: "var(--text-muted)" }}
-        >
-          About E-Cell
-        </p>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-6 animated-gradient-text">
+        <span className="stamp mb-4 inline-flex">§ 06 · About</span>
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6 mt-4 font-display animated-gradient-text">
           Student-Led, Founder-Focused.
         </h1>
-        <p className="text-lg leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
+        <div className="dim-line ml-0 mb-6 max-w-xs" />
+        <p className="text-lg leading-relaxed mb-8 normal-case" style={{ color: "var(--text-secondary)" }}>
           E-Cell BVCOENM exists to help students move from ideas to execution through
           events, mentorship, collaboration, and practical startup learning.
         </p>

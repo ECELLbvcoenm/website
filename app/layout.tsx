@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,11 +12,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const archivo = Archivo({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "900"],
-  style: ["normal", "italic"],
+  weight: ["600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -41,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="light" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${fraunces.variable} ${plexMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} ${archivo.variable} ${plexMono.variable} antialiased min-h-screen flex flex-col`}
         style={{
           background: "var(--bg-primary)",
           color: "var(--text-primary)",

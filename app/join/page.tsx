@@ -69,13 +69,11 @@ export default function JoinPage() {
     >
       <div className="w-full max-w-xl">
         <div className="mb-10 text-center">
-          <p className="font-data text-xs tracking-[0.2em] uppercase mb-4" style={{ color: "var(--text-muted)" }}>
-            Applications open
-          </p>
-          <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight mb-3">
+          <span className="stamp mb-4 inline-flex">§ 05 · Applications Open</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-3 mt-4">
             Join the team
           </h1>
-          <p className="text-base" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-base normal-case" style={{ color: "var(--text-secondary)" }}>
             Four short steps. Takes about two minutes.
           </p>
         </div>

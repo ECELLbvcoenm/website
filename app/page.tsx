@@ -74,15 +74,21 @@ export default function Home() {
       {/* ── HERO ── */}
       <section className="relative pt-36 pb-20 border-b" style={{ borderColor: "var(--border-primary)" }}>
         <div className="absolute inset-0 grid-bg pointer-events-none" />
+        {/* Registration marks — frame corners like a drawing sheet */}
+        <div className="crosshair hidden md:block" style={{ top: 24, left: 24 }} />
+        <div className="crosshair hidden md:block" style={{ top: 24, right: 24 }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-16 items-center">
             <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-              <p className="font-data text-xs tracking-[0.2em] uppercase mb-6" style={{ color: "var(--text-muted)" }}>
-                Entrepreneurship Cell — BVCOENM, Navi Mumbai
-              </p>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="stamp">Est. 2024</span>
+                <p className="font-data text-xs tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
+                  Entrepreneurship Cell — BVCOENM, Navi Mumbai
+                </p>
+              </div>
 
               <h1
-                className="font-display text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-6"
+                className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.02] mb-6"
                 style={{ color: "var(--text-primary)" }}
               >
                 Where a rough idea
@@ -90,8 +96,10 @@ export default function Home() {
                 becomes a first pitch.
               </h1>
 
+              <div className="dim-line ml-0 mb-6 max-w-md" />
+
               <p
-                className="text-lg max-w-xl leading-relaxed mb-9"
+                className="text-lg max-w-xl leading-relaxed mb-9 normal-case"
                 style={{ color: "var(--text-secondary)" }}
               >
                 We run the seminars, competitions and bootcamps that take a student
@@ -102,14 +110,14 @@ export default function Home() {
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/join"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-semibold text-sm transition-transform hover:-translate-y-0.5"
+                  className="btn-clip inline-flex items-center gap-2 px-6 py-3 font-semibold text-sm transition-transform hover:-translate-y-0.5"
                   style={{ background: "var(--gradient-hero)", color: "#fff" }}
                 >
                   Join the team <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/events"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-semibold text-sm transition-colors glass glass-hover"
+                  className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-sm transition-colors glass glass-hover"
                   style={{ color: "var(--text-primary)" }}
                 >
                   See past events
@@ -131,13 +139,9 @@ export default function Home() {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-5 flex items-center justify-between rule">
-                  <span className="font-data text-xs tracking-[0.15em] uppercase" style={{ color: "var(--text-muted)" }}>
-                    E-Cell BVCOENM
-                  </span>
-                  <span className="font-data text-xs" style={{ color: "var(--text-accent)" }}>
-                    est. 2024
-                  </span>
+                <div className="px-5 py-4 flex items-center justify-between rule font-data text-[11px]" style={{ color: "var(--text-muted)" }}>
+                  <span className="uppercase tracking-widest">Fig. 01 — E-Cell BVCOENM</span>
+                  <span style={{ color: "var(--text-accent)" }}>Scale N.T.S.</span>
                 </div>
               </div>
             </motion.div>
@@ -150,10 +154,13 @@ export default function Home() {
         <section>
           <div className="flex items-end justify-between mb-10 gap-6 flex-wrap">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-tight mb-2">
+              <span className="font-data text-xs tracking-widest" style={{ color: "var(--text-accent)" }}>
+                § 01
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight mb-2 mt-1">
                 The team
               </h2>
-              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm normal-case" style={{ color: "var(--text-muted)" }}>
                 Students running E-Cell this year, across departments.
               </p>
             </div>
@@ -207,10 +214,13 @@ export default function Home() {
         <section>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-tight mb-2">
+              <span className="font-data text-xs tracking-widest" style={{ color: "var(--text-accent)" }}>
+                § 02
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight mb-2 mt-1">
                 Events
               </h2>
-              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm normal-case" style={{ color: "var(--text-muted)" }}>
                 What we&apos;ve run so far, and what&apos;s coming up.
               </p>
             </div>

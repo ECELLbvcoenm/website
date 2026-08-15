@@ -15,13 +15,12 @@ export default function EventsPage() {
     <div className="min-h-screen pt-32 pb-32" style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-16 max-w-2xl">
-          <p className="font-data text-xs tracking-[0.2em] uppercase mb-4" style={{ color: "var(--text-muted)" }}>
-            Events
-          </p>
-          <h1 className="font-display text-5xl md:text-6xl font-semibold tracking-tight mb-4">
+          <span className="stamp mb-4 inline-flex">§ 02 · Events</span>
+          <h1 className="font-display text-5xl md:text-6xl font-bold tracking-tight mb-4 mt-4">
             The full record.
           </h1>
-          <p className="text-lg leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          <div className="dim-line ml-0 mb-6 max-w-xs" />
+          <p className="text-lg leading-relaxed normal-case" style={{ color: "var(--text-secondary)" }}>
             Every seminar, competition and bootcamp we&apos;ve run, in one place.
           </p>
         </motion.div>

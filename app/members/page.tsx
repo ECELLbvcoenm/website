@@ -64,13 +64,12 @@ export default function MembersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 pb-10 mb-16 rule">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex-1">
-            <p className="font-data text-xs tracking-[0.2em] uppercase mb-4" style={{ color: "var(--text-muted)" }}>
-              Team
-            </p>
-            <h1 className="font-display text-5xl md:text-6xl font-semibold tracking-tight mb-4">
+            <span className="stamp mb-4 inline-flex">§ 01 · Team</span>
+            <h1 className="font-display text-5xl md:text-6xl font-bold tracking-tight mb-4 mt-4">
               The people behind it.
             </h1>
-            <p className="text-lg max-w-xl" style={{ color: "var(--text-secondary)" }}>
+            <div className="dim-line ml-0 mb-6 max-w-xs" />
+            <p className="text-lg max-w-xl normal-case" style={{ color: "var(--text-secondary)" }}>
               Everyone currently running E-Cell, organised by department.
             </p>
           </motion.div>

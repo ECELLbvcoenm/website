@@ -137,22 +137,25 @@ export default function Footer() {
           </div>
         </div>
 
-        <div
-          className="mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-3"
-          style={{ borderTop: "1px solid var(--border-primary)" }}
-        >
-          <p
-            className="text-xs font-mono tracking-widest"
-            style={{ color: "var(--text-muted)" }}
-          >
-            © 2026 E-Cell BVCOENM. All rights reserved.
-          </p>
-          <p
-            className="text-xs font-mono tracking-widest"
-            style={{ color: "var(--text-muted)" }}
-          >
-            Made by students, for students.
-          </p>
+        <div className="mt-12" style={{ borderTop: "1px solid var(--border-primary)" }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 font-data text-[11px]" style={{ color: "var(--text-muted)" }}>
+            <div className="px-4 py-3" style={{ borderRight: "1px solid var(--border-primary)", borderTop: "1px solid var(--border-primary)" }}>
+              <span className="block uppercase tracking-widest mb-1" style={{ color: "var(--text-muted)" }}>Sheet</span>
+              <span style={{ color: "var(--text-secondary)" }}>E-CELL / SITE</span>
+            </div>
+            <div className="px-4 py-3" style={{ borderRight: "1px solid var(--border-primary)", borderTop: "1px solid var(--border-primary)" }}>
+              <span className="block uppercase tracking-widest mb-1" style={{ color: "var(--text-muted)" }}>Rev.</span>
+              <span style={{ color: "var(--text-secondary)" }}>03</span>
+            </div>
+            <div className="px-4 py-3" style={{ borderRight: "1px solid var(--border-primary)", borderTop: "1px solid var(--border-primary)" }}>
+              <span className="block uppercase tracking-widest mb-1" style={{ color: "var(--text-muted)" }}>Year</span>
+              <span style={{ color: "var(--text-secondary)" }}>2026</span>
+            </div>
+            <div className="px-4 py-3" style={{ borderTop: "1px solid var(--border-primary)" }}>
+              <span className="block uppercase tracking-widest mb-1" style={{ color: "var(--text-muted)" }}>Drawn by</span>
+              <span style={{ color: "var(--text-secondary)" }}>E-Cell BVCOENM</span>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
