@@ -35,22 +35,27 @@ export default function EventPopup() {
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
-    // Listen for custom trigger from Navbar or anywhere
+    // Listen for a manual trigger from anywhere in the app (e.g. a nav button)
     const handleCustomOpen = () => {
       setClosing(false);
       setVisible(true);
     };
     window.addEventListener("open-event-popup", handleCustomOpen);
 
-    // Automatic popup on page load
-    const autoTimer = setTimeout(() => {
-      setClosing(false);
-      setVisible(true);
-    }, 600);
+    // Auto-show once per browser session, not on every single page load
+    const alreadySeen = sessionStorage.getItem("ecell-event-popup-seen");
+    let autoTimer: ReturnType<typeof setTimeout> | undefined;
+    if (!alreadySeen) {
+      autoTimer = setTimeout(() => {
+        setClosing(false);
+        setVisible(true);
+        sessionStorage.setItem("ecell-event-popup-seen", "1");
+      }, 1400);
+    }
 
     return () => {
       window.removeEventListener("open-event-popup", handleCustomOpen);
-      clearTimeout(autoTimer);
+      if (autoTimer) clearTimeout(autoTimer);
     };
   }, []);
 
