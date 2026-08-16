@@ -11,8 +11,8 @@
   --bg-secondary: #0a0a0f;
   --bg-card: rgba(255, 255, 255, 0.02);
   --bg-card-hover: rgba(255, 255, 255, 0.05);
-  --bg-glass: rgba(255, 255, 255, 0.03);
-  --bg-glass-hover: rgba(255, 255, 255, 0.06);
+  --bg-glass: rgba(18, 18, 24, 0.85);
+  --bg-glass-hover: rgba(24, 24, 32, 0.9);
   --bg-nav: rgba(0, 0, 0, 0.8);
 
   --text-primary: #f0f0f5;
