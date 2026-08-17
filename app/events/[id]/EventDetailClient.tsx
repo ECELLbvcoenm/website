@@ -48,7 +48,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps) {
 
   return (
     <div
-      className="min-h-screen selection:bg-indigo-500/30 overflow-hidden pt-32 pb-32"
+      className="min-h-screen overflow-hidden pt-32 pb-32"
       style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -58,7 +58,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps) {
         />
         <div
           className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[100px]"
-          style={{ background: "rgba(99,102,241,0.05)" }}
+          style={{ background: "var(--accent-glow)" }}
         />
       </div>
 
@@ -132,11 +132,7 @@ export default function EventDetailClient({ event }: EventDetailClientProps) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="w-full aspect-video md:aspect-[21/9] rounded-[2rem] overflow-hidden mb-16"
-            style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border-primary)",
-            }}
+            className="w-full aspect-video md:aspect-[21/9] rounded-[2rem] overflow-hidden mb-16 glass"
           >
             <img
               src={event.coverImage}

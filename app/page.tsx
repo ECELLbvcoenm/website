@@ -165,7 +165,7 @@ export default function Home() {
               <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.02]">
                 Empowering Ideas,
                 <br />
-                <span style={{ color: "var(--text-secondary)" }}>Igniting Ventures.</span>
+                <span className="animated-gradient-text">Igniting Ventures.</span>
               </h1>
 
               <p
@@ -222,7 +222,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-3xl font-black">2024</p>
+                  <p className="text-3xl font-black">2017</p>
                   <p className="text-xs uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
                     Since
                   </p>
@@ -230,23 +230,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div>
-              <div
-                className="rounded-3xl overflow-hidden border"
-                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
-              >
-                <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
-                  alt="E-Cell Official Logo"
-                  className="w-full aspect-square object-cover"
-                />
-                <div className="p-6 border-t" style={{ borderColor: "var(--border-primary)" }}>
-                  <p className="text-xs uppercase tracking-[0.2em]" style={{ color: "var(--text-muted)" }}>
-                    Official Hub
-                  </p>
-                  <p className="text-lg font-semibold mt-1">Building founders through action.</p>
-                </div>
-              </div>
+            <div className="flex items-center justify-center">
+              <img
+                src="/file_0000000042e082119506e5b1c459b4bc.png"
+                alt="E-Cell Official Logo"
+                className="w-full max-w-2xl lg:scale-110 h-auto object-contain drop-shadow-2xl transition-transform duration-500"
+              />
             </div>
           </div>
         </div>
@@ -263,10 +252,9 @@ export default function Home() {
             {pillars.map((pillar) => (
               <article
                 key={pillar.id}
-                className="rounded-2xl border p-7"
-                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+                className="rounded-2xl glass glass-hover glow-border card-shine p-7"
               >
-                <p className="font-mono text-xs tracking-[0.2em] mb-5" style={{ color: "var(--text-muted)" }}>
+                <p className="font-mono text-xs tracking-[0.2em] mb-5" style={{ color: "var(--text-accent)" }}>
                   PROTOCOL_{pillar.id}
                 </p>
                 <h3 className="text-3xl font-bold mb-4">{pillar.title}</h3>
@@ -290,7 +278,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="sponsor-loop-mask rounded-xl border py-4" style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}>
+          <div className="sponsor-loop-mask rounded-xl glass py-4">
             <div className="sponsor-loop-track">
               {[...sponsorLogos, ...sponsorLogos].map((sponsor, index) => (
                 <Link
@@ -336,8 +324,8 @@ export default function Home() {
             {featuredMembers.map((member) => (
               <article
                 key={member.id}
-                className="group rounded-2xl border border-l-2 p-4"
-                style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+                className="group rounded-2xl glass glass-hover p-4 border-l-2"
+                style={{ borderLeftColor: "var(--text-accent)" }}
               >
                 <div className="aspect-square rounded-xl overflow-hidden mb-4 relative" style={{ background: "var(--bg-card)" }}>
                   <img
@@ -404,10 +392,10 @@ export default function Home() {
               {filteredEvents.map((event) => (
                 <article
                   key={event.id}
-                  className="rounded-2xl border border-l-2 p-6 flex flex-col"
-                  style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+                  className="rounded-2xl glass glass-hover p-6 flex flex-col border-l-2"
+                  style={{ borderLeftColor: "var(--text-accent)" }}
                 >
-                  <p className="text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "var(--text-muted)" }}>
+                  <p className="text-[11px] uppercase tracking-[0.2em] mb-4" style={{ color: "var(--text-accent)" }}>
                     {event.type}
                   </p>
                   <h3 className="text-2xl font-bold leading-tight mb-3">{event.title}</h3>
@@ -419,7 +407,7 @@ export default function Home() {
                     <span className="inline-flex items-center gap-2">
                       <CalendarDays className="w-4 h-4" /> {event.date}
                     </span>
-                    <Link href={`/events/${event.id}`} className="font-semibold" style={{ color: "var(--text-primary)" }}>
+                    <Link href={`/events/${event.id}`} className="font-semibold transition-colors hover:text-[var(--text-accent)]" style={{ color: "var(--text-primary)" }}>
                       Details
                     </Link>
                   </div>
@@ -427,10 +415,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <div
-              className="rounded-2xl border p-10 text-center"
-              style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
-            >
+            <div className="rounded-2xl glass p-10 text-center">
               <p className="text-lg font-semibold mb-2">No events found</p>
               <p style={{ color: "var(--text-secondary)" }}>
                 Try switching filters or check the events page for the full archive.
@@ -448,12 +433,11 @@ export default function Home() {
               {faqItems.map((item) => (
                 <details
                   key={item.question}
-                  className="group rounded-xl border px-5 py-4"
-                  style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
+                  className="group rounded-xl glass glass-hover px-5 py-4"
                 >
                   <summary className="cursor-pointer font-semibold list-none flex items-center justify-between gap-3">
                     <span>{item.question}</span>
-                    <ChevronRight className="w-4 h-4 shrink-0 transition-transform duration-300 group-open:rotate-90" style={{ color: "var(--text-muted)" }} />
+                    <ChevronRight className="w-4 h-4 shrink-0 transition-transform duration-300 group-open:rotate-90 group-open:text-[var(--text-accent)]" style={{ color: "var(--text-muted)" }} />
                   </summary>
                   <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                     {item.answer}
@@ -463,10 +447,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div
-            className="mt-12 rounded-2xl border p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-            style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
-          >
+          <div className="mt-12 rounded-2xl glass glow-border card-shine p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <p className="font-semibold text-xl">Ready to build with E-Cell?</p>
               <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>

@@ -22,7 +22,7 @@ export default function EventsPage() {
 
   return (
     <div
-      className="min-h-screen selection:bg-indigo-500/30 overflow-hidden pt-32 pb-32"
+      className="min-h-screen overflow-hidden pt-32 pb-32"
       style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -32,7 +32,7 @@ export default function EventsPage() {
         />
         <div
           className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[100px]"
-          style={{ background: "rgba(99,102,241,0.05)" }}
+          style={{ background: "var(--accent-glow)" }}
         />
       </div>
 

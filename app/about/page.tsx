@@ -42,8 +42,8 @@ export default function AboutPage() {
 
         <Link
           href="/join"
-          className="inline-flex px-6 py-3 rounded-full font-semibold"
-          style={{ background: "var(--gradient-hero)", color: "#fff" }}
+          className="inline-flex px-6 py-3 rounded-full font-semibold transition-all hover:scale-105"
+          style={{ background: "var(--text-primary)", color: "var(--bg-primary)" }}
         >
           Join Team
         </Link>

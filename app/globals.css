@@ -7,68 +7,68 @@
 
 /* --- DARK THEME (default) --- */
 :root {
-  --bg-primary: #050507;
-  --bg-secondary: #0a0a0f;
+  --bg-primary: #050505;
+  --bg-secondary: #0c0c0e;
   --bg-card: rgba(255, 255, 255, 0.02);
-  --bg-card-hover: rgba(255, 255, 255, 0.05);
-  --bg-glass: rgba(255, 255, 255, 0.03);
-  --bg-glass-hover: rgba(255, 255, 255, 0.06);
-  --bg-nav: rgba(0, 0, 0, 0.8);
+  --bg-card-hover: rgba(255, 255, 255, 0.04);
+  --bg-glass: rgba(10, 10, 12, 0.7);
+  --bg-glass-hover: rgba(15, 15, 18, 0.85);
+  --bg-nav: rgba(5, 5, 5, 0.8);
 
-  --text-primary: #f0f0f5;
+  --text-primary: #f3f4f6;
   --text-secondary: #a1a1aa;
   --text-muted: #52525b;
-  --text-accent: #60a5fa;
+  --text-accent: #3b82f6;
 
   --border-primary: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(96, 165, 250, 0.4);
-  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(59, 130, 246, 0.35);
+  --border-glass: rgba(255, 255, 255, 0.04);
 
   --accent-blue: #3b82f6;
   --accent-indigo: #6366f1;
   --accent-purple: #8b5cf6;
   --accent-cyan: #22d3ee;
-  --accent-glow: rgba(59, 130, 246, 0.15);
-  --accent-glow-strong: rgba(59, 130, 246, 0.4);
+  --accent-glow: rgba(59, 130, 246, 0.05);
+  --accent-glow-strong: rgba(59, 130, 246, 0.2);
 
-  --shadow-card: 0 0 40px -15px rgba(59, 130, 246, 0.1);
-  --shadow-card-hover: 0 0 60px -15px rgba(59, 130, 246, 0.25);
+  --shadow-card: 0 0 40px -15px rgba(0, 0, 0, 0.6);
+  --shadow-card-hover: 0 0 60px -15px rgba(59, 130, 246, 0.15);
 
-  --gradient-hero: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
-  --gradient-text: linear-gradient(90deg, #60a5fa, #818cf8, #a78bfa, #60a5fa);
+  --gradient-hero: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #3f3f46 100%);
+  --gradient-text: linear-gradient(90deg, #ffffff 0%, #a1a1aa 35%, #f4f4f5 70%, #ffffff 100%);
 }
 
 /* --- LIGHT THEME --- */
 html.light {
-  --bg-primary: #f8f9fc;
+  --bg-primary: #faf9f6;
   --bg-secondary: #ffffff;
-  --bg-card: rgba(0, 0, 0, 0.02);
-  --bg-card-hover: rgba(0, 0, 0, 0.04);
+  --bg-card: rgba(0, 0, 0, 0.015);
+  --bg-card-hover: rgba(0, 0, 0, 0.03);
   --bg-glass: rgba(255, 255, 255, 0.7);
   --bg-glass-hover: rgba(255, 255, 255, 0.85);
-  --bg-nav: rgba(255, 255, 255, 0.85);
+  --bg-nav: rgba(250, 249, 246, 0.8);
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
   --text-muted: #94a3b8;
   --text-accent: #2563eb;
 
-  --border-primary: rgba(0, 0, 0, 0.08);
-  --border-hover: rgba(37, 99, 235, 0.4);
-  --border-glass: rgba(0, 0, 0, 0.06);
+  --border-primary: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(37, 99, 235, 0.35);
+  --border-glass: rgba(0, 0, 0, 0.04);
 
   --accent-blue: #2563eb;
   --accent-indigo: #4f46e5;
   --accent-purple: #7c3aed;
   --accent-cyan: #0891b2;
-  --accent-glow: rgba(37, 99, 235, 0.08);
-  --accent-glow-strong: rgba(37, 99, 235, 0.2);
+  --accent-glow: rgba(37, 99, 235, 0.04);
+  --accent-glow-strong: rgba(37, 99, 235, 0.15);
 
-  --shadow-card: 0 4px 30px -10px rgba(0, 0, 0, 0.08);
-  --shadow-card-hover: 0 8px 50px -15px rgba(37, 99, 235, 0.15);
+  --shadow-card: 0 4px 30px -10px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 8px 50px -15px rgba(37, 99, 235, 0.08);
 
-  --gradient-hero: linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed);
-  --gradient-text: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed, #2563eb);
+  --gradient-hero: linear-gradient(135deg, #09090b 0%, #52525b 50%, #a1a1aa 100%);
+  --gradient-text: linear-gradient(90deg, #09090b 0%, #27272a 35%, #52525b 70%, #09090b 100%);
 }
 
 @theme inline {
@@ -79,10 +79,10 @@ html.light {
 }
 
 /* --- GLOBAL TRANSITIONS --- */
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, box-shadow;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
+a, button, input, select, textarea, .glass, .glass-hover, .glow-border, .sponsor-loop-item, img {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity, filter;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -263,5 +263,47 @@ body {
 
 /* --- SELECTION --- */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(59, 130, 246, 0.25);
+  color: var(--text-primary);
+}
+
+/* --- VIEW TRANSITIONS (Cinematic Radial Theme Reveals) --- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  height: 100%;
+}
+
+/* Expand direction (revealing new dark theme) */
+.theme-reveal-expand::view-transition-new(root) {
+  clip-path: circle(0% at var(--reveal-x) var(--reveal-y));
+  animation: reveal-expand 700ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.theme-reveal-expand::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+/* Collapse direction (collapsing current theme into the button to reveal light theme) */
+.theme-reveal-collapse::view-transition-old(root) {
+  clip-path: circle(150% at var(--reveal-x) var(--reveal-y));
+  animation: reveal-collapse 700ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 10;
+}
+.theme-reveal-collapse::view-transition-new(root) {
+  animation: none;
+  z-index: 1;
+}
+
+@keyframes reveal-expand {
+  to {
+    clip-path: circle(150% at var(--reveal-x) var(--reveal-y));
+  }
+}
+
+@keyframes reveal-collapse {
+  to {
+    clip-path: circle(0% at var(--reveal-x) var(--reveal-y));
+  }
 }

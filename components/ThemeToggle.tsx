@@ -7,9 +7,36 @@ import { Sun, Moon } from "lucide-react";
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
+  const handleToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const x = event.clientX;
+    const y = event.clientY;
+
+    const doc = document as Document & {
+      startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+    };
+    if (!doc.startViewTransition) {
+      toggleTheme();
+      return;
+    }
+
+    document.documentElement.style.setProperty("--reveal-x", `${x}px`);
+    document.documentElement.style.setProperty("--reveal-y", `${y}px`);
+
+    // Always use the collapse animation to match the dark-to-light transition
+    document.documentElement.classList.add("theme-reveal-collapse");
+
+    const transition = doc.startViewTransition(() => {
+      toggleTheme();
+    });
+
+    transition.finished.finally(() => {
+      document.documentElement.classList.remove("theme-reveal-expand", "theme-reveal-collapse");
+    });
+  };
+
   return (
     <button
-      onClick={toggleTheme}
+      onClick={handleToggle}
       className="relative w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
       style={{
         background: "var(--bg-glass)",
