@@ -168,7 +168,7 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                  src="/images/events/logo/logo.jpg"
                   alt="E-Cell Official Logo"
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out opacity-90"
                 />
