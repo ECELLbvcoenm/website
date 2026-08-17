@@ -22,10 +22,13 @@ export const LOCAL_MEMBERS = [
   { id: "p1", name: "Sara Chaure", role: "PR HEAD", department: "PUBLIC RELATIONS", rank: 501 },
   { id: "p2", name: "Aditya More", role: "JOINT PR HEAD", department: "PUBLIC RELATIONS", rank: 502 },
   { id: "p3", name: "Aarya Jogdand", role: "PR MEMBER", department: "PUBLIC RELATIONS", rank: 503 },
+  { id: "p4", name: "Rashi Baheti", role: "PR MEMBER", department: "PUBLIC RELATIONS", rank: 504 },
 
   // EVENTS
   { id: "e1", name: "Vaishnavi Lagad", role: "EVENT HEAD", department: "EVENTS", rank: 601 },
   { id: "e2", name: "Harshada Atpadkar", role: "JOINT EVENT HEAD", department: "EVENTS", rank: 602 },
+  { id: "e3", name: "Bhumi Savle", role: "EVENT MEMBER", department: "EVENTS", rank: 603 },
+  { id: "e4", name: "Sadhana Yadav", role: "EVENT MEMBER", department: "EVENTS", rank: 604 },
 
   // SOCIAL MEDIA
   { id: "sm1", name: "Shreya Jadhav", role: "SOCIAL MEDIA HEAD", department: "SOCIAL MEDIA", rank: 701 },
