@@ -236,7 +236,7 @@ export default function Home() {
                 style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}
               >
                 <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                  src="/images/events/logo/logo.jpg"
                   alt="E-Cell Official Logo"
                   className="w-full aspect-square object-cover"
                 />

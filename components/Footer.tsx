@@ -37,7 +37,7 @@ export default function Footer() {
           <div className="lg:col-span-5">
             <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
               <img
-                src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                src="/images/events/logo/logo.jpg"
                 alt="E-Cell Logo"
                 className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform"
                 style={{ border: "1px solid var(--border-primary)" }}

@@ -39,7 +39,7 @@ export default function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center gap-3 group">
                 <img
-                  src="/images/events/logo/PHOTO-2026-03-15-01-22-36.jpg"
+                  src="/images/events/logo/logo.jpg"
                   alt="E-Cell Logo"
                   className="w-8 h-8 rounded-full group-hover:scale-110 transition-transform duration-300 object-cover"
                   style={{ border: "1px solid var(--border-primary)" }}
