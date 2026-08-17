@@ -78,6 +78,8 @@ export default function Home() {
     return [
       "president",
       "vice president",
+      "secretary",
+      "joint secretary",
       "treasurer",
       "trasursrer",
       "joint treasurer",

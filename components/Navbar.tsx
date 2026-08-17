@@ -81,6 +81,8 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
+
+
               </div>
             </div>
 
@@ -234,6 +236,8 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
+
+
 
                 {/* Mobile auth */}
                 <div

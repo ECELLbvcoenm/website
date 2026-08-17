@@ -9,7 +9,13 @@ export default function JoinPage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ full_name: "", email: "", contact_number: "", department: "", motivation: "" });
+  const [formData, setFormData] = useState<{
+    full_name: string;
+    email: string;
+    contact_number: string;
+    department: string;
+    motivation: string;
+  }>({ full_name: "", email: "", contact_number: "", department: "", motivation: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -30,6 +36,8 @@ export default function JoinPage() {
       const { error: dbError } = await supabase.from("applications").insert(formData);
       if (dbError) throw dbError;
       setStep(4);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -96,8 +104,15 @@ export default function JoinPage() {
             {step === 1 && (
               <motion.div key="s1" variants={formVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
                 <div><h2 className="text-xl font-semibold mb-1">Personal Details</h2><p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>Let&apos;s start with your identity.</p></div>
+                <div><h2 className="text-xl font-semibold mb-1">Personal Details</h2><p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>Let&apos;s start with your identity.</p></div>
                 <div className="space-y-4">
-                  {[{ label: "Full Name *", name: "full_name", type: "text", ph: "Jane Doe" }, { label: "Email Address *", name: "email", type: "email", ph: "jane@example.com" }, { label: "Contact Number", name: "contact_number", type: "tel", ph: "+91 98765 43210", opt: true }].map((f) => (
+                  {(
+                    [
+                      { label: "Full Name *", name: "full_name", type: "text", ph: "Jane Doe", opt: false },
+                      { label: "Email Address *", name: "email", type: "email", ph: "jane@example.com", opt: false },
+                      { label: "Contact Number", name: "contact_number", type: "tel", ph: "+91 98765 43210", opt: true },
+                    ] as const
+                  ).map((f) => (
                     <div key={f.name} className="space-y-2">
                       <label className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{f.label} {f.opt && <span style={{ color: "var(--text-muted)" }}>(Optional)</span>}</label>
                       <input type={f.type} name={f.name} value={formData[f.name as keyof typeof formData]} onChange={handleChange} placeholder={f.ph} className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all" style={inputStyle} />
