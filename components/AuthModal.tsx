@@ -97,26 +97,21 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md rounded-3xl overflow-hidden"
+            className="relative w-full max-w-md rounded-3xl overflow-hidden glass"
             style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-primary)",
-              boxShadow: "0 25px 80px -20px rgba(0,0,0,0.5)",
+              boxShadow: "var(--shadow-card-hover)",
             }}
           >
-            {/* Decorative gradient top bar */}
-            <div
-              className="h-1 w-full"
-              style={{ background: "var(--gradient-hero)" }}
-            />
-
             {/* Close */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-105"
               style={{
                 background: "var(--bg-glass)",
                 color: "var(--text-muted)",
+                border: "1px solid var(--border-primary)",
               }}
             >
               <X className="w-4 h-4" />
@@ -125,6 +120,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <div className="p-8 space-y-6">
               {/* Header */}
               <div className="text-center space-y-2">
+                <p className="font-mono text-xs uppercase tracking-[0.24em]" style={{ color: "var(--text-muted)" }}>
+                  Authentication
+                </p>
                 <h2
                   className="text-2xl font-bold tracking-tight"
                   style={{ color: "var(--text-primary)" }}
@@ -146,7 +144,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 onClick={handleGoogleAuth}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:scale-[1.02]"
                 style={{
-                  background: "var(--bg-card)",
+                  background: "var(--bg-secondary)",
                   border: "1px solid var(--border-primary)",
                   color: "var(--text-primary)",
                 }}
@@ -204,7 +202,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-all"
+                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] transition-all"
                     style={{
                       background: "var(--bg-card)",
                       border: "1px solid var(--border-primary)",
@@ -224,7 +222,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 transition-all"
+                    className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] transition-all"
                     style={{
                       background: "var(--bg-card)",
                       border: "1px solid var(--border-primary)",
@@ -247,10 +245,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-white transition-all hover:scale-[1.02] disabled:opacity-60"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all hover:scale-[1.02] disabled:opacity-60"
                   style={{
-                    background: "var(--gradient-hero)",
-                    boxShadow: "0 0 20px var(--accent-glow)",
+                    background: "var(--text-primary)",
+                    color: "var(--bg-primary)",
+                    border: "1px solid var(--text-primary)",
                   }}
                 >
                   {loading ? (
