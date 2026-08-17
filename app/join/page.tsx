@@ -38,8 +38,6 @@ export default function JoinPage() {
       setStep(4);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }

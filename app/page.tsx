@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, ChevronRight, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { pastEvents } from "@/lib/events";
 import { LOCAL_MEMBERS } from "@/lib/localMembers";
+import ScrollReveal from "@/components/ScrollReveal";
 
 type Member = {
   id: string | number;
@@ -154,7 +155,7 @@ export default function Home() {
         className="pt-28 pb-20 border-b"
         style={{ borderColor: "var(--border-primary)" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <p
@@ -240,11 +241,11 @@ export default function Home() {
               />
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       <section className="py-20 border-b" style={{ borderColor: "var(--border-primary)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
             Core Focus
           </p>
@@ -266,11 +267,11 @@ export default function Home() {
               </article>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       <section className="py-12 border-b" style={{ borderColor: "var(--border-primary)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <p className="font-mono text-xs uppercase tracking-[0.24em]" style={{ color: "var(--text-muted)" }}>
               Industry Partners
@@ -298,11 +299,11 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       <section className="py-20 border-b" style={{ borderColor: "var(--border-primary)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
@@ -352,11 +353,11 @@ export default function Home() {
               </article>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.24em] mb-4" style={{ color: "var(--text-muted)" }}>
@@ -474,7 +475,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
     </div>
   );
