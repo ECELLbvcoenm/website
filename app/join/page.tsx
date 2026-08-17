@@ -73,7 +73,7 @@ export default function JoinPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-indigo-500/30 font-sans relative overflow-hidden" style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden" style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] pointer-events-none" style={{ background: "var(--accent-glow)" }} />
 
       <div className="w-full max-w-xl relative z-10">
@@ -102,6 +102,7 @@ export default function JoinPage() {
             {step === 1 && (
               <motion.div key="s1" variants={formVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
                 <div><h2 className="text-xl font-semibold mb-1">Personal Details</h2><p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>Let&apos;s start with your identity.</p></div>
+                <div><h2 className="text-xl font-semibold mb-1">Personal Details</h2><p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>Let&apos;s start with your identity.</p></div>
                 <div className="space-y-4">
                   {(
                     [
@@ -112,7 +113,7 @@ export default function JoinPage() {
                   ).map((f) => (
                     <div key={f.name} className="space-y-2">
                       <label className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{f.label} {f.opt && <span style={{ color: "var(--text-muted)" }}>(Optional)</span>}</label>
-                      <input type={f.type} name={f.name} value={formData[f.name]} onChange={handleChange} placeholder={f.ph} className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all" style={inputStyle} />
+                      <input type={f.type} name={f.name} value={formData[f.name as keyof typeof formData]} onChange={handleChange} placeholder={f.ph} className="w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 transition-all" style={inputStyle} />
                     </div>
                   ))}
                 </div>

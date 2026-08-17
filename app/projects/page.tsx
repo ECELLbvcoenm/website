@@ -34,8 +34,8 @@ export default function ProjectsPage() {
           </div>
           <Link
             href="/community"
-            className="inline-flex px-5 py-2.5 rounded-full text-sm font-semibold"
-            style={{ background: "var(--gradient-hero)", color: "#fff" }}
+            className="inline-flex px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105"
+            style={{ background: "var(--text-primary)", color: "var(--bg-primary)" }}
           >
             Open Directory
           </Link>

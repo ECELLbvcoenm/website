@@ -37,10 +37,9 @@ export default function Footer() {
           <div className="lg:col-span-5">
             <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
               <img
-                src="/images/events/logo/logo.jpg"
+                src="/file_0000000042e082119506e5b1c459b4bc.png"
                 alt="E-Cell Logo"
-                className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform"
-                style={{ border: "1px solid var(--border-primary)" }}
+                className="w-14 h-14 object-contain group-hover:scale-105 transition-transform"
               />
               <div>
                 <p
@@ -80,7 +79,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-sm transition-colors hover:opacity-80"
+                      className="text-sm transition-colors hover:text-[var(--text-accent)]"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       {link.name}
@@ -102,7 +101,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-sm transition-colors hover:opacity-80"
+                      className="text-sm transition-colors hover:text-[var(--text-accent)]"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       {link.name}
@@ -126,7 +125,7 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm transition-colors hover:opacity-80"
+                      className="text-sm transition-colors hover:text-[var(--text-accent)]"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       {link.name}

@@ -50,7 +50,7 @@ export default function SponsorsPage() {
 
   return (
     <div
-      className="min-h-screen pt-32 pb-32 overflow-hidden selection:bg-indigo-500/30"
+      className="min-h-screen pt-32 pb-32 overflow-hidden"
       style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -60,7 +60,7 @@ export default function SponsorsPage() {
         />
         <div
           className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[100px]"
-          style={{ background: "rgba(139,92,246,0.05)" }}
+          style={{ background: "var(--accent-glow)" }}
         />
       </div>
 
@@ -107,11 +107,7 @@ export default function SponsorsPage() {
               className="backdrop-blur-md rounded-[2rem] p-10 group relative overflow-hidden flex flex-col items-center glass glass-hover glow-border card-shine"
             >
               <div
-                className="w-full h-48 mb-8 relative flex items-center justify-center rounded-2xl overflow-hidden transition-colors"
-                style={{
-                  background: "var(--bg-secondary)",
-                  border: "1px solid var(--border-primary)",
-                }}
+                className="w-full h-48 mb-8 relative flex items-center justify-center rounded-2xl overflow-hidden transition-colors glass"
               >
                 <img
                   src={sponsor.logo}
@@ -167,8 +163,8 @@ export default function SponsorsPage() {
           <button
             className="relative z-10 px-8 py-4 rounded-full font-bold transition-all hover:scale-105"
             style={{
-              background: "var(--gradient-hero)",
-              color: "#fff",
+              background: "var(--text-primary)",
+              color: "var(--bg-primary)",
               boxShadow: "0 0 30px var(--accent-glow-strong)",
             }}
           >

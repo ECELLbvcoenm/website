@@ -20,14 +20,21 @@ function getInitialTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    document.documentElement.classList.remove("dark", "light");
-    document.documentElement.classList.add(theme);
-    setMounted(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const stored = localStorage.getItem("ecell-theme") as Theme | null;
+    const initial = stored || "dark";
+    
+    // Defer state update to avoid calling setState synchronously within the effect body
+    setTimeout(() => {
+      setTheme(initial);
+    }, 0);
+
+    if (!document.documentElement.classList.contains(initial)) {
+      document.documentElement.classList.remove("dark", "light");
+      document.documentElement.classList.add(initial);
+    }
   }, []);
 
   const toggleTheme = () => {
@@ -37,11 +44,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.remove("dark", "light");
     document.documentElement.classList.add(next);
   };
-
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return <div style={{ visibility: "hidden" }}>{children}</div>;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

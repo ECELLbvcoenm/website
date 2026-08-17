@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
+import { Loader2, Instagram, Linkedin, Github } from "lucide-react";
 
 type Member = {
   id: string | number;
@@ -12,6 +12,9 @@ type Member = {
   department: string;
   image_url?: string;
   rank?: number;
+  instagram?: string;
+  linkedin?: string;
+  github?: string;
 };
 
 import { LOCAL_MEMBERS } from "@/lib/localMembers";
@@ -38,10 +41,19 @@ export default function MembersPage() {
           console.warn("Notice: Database unreachable for members", error);
           setMembers(LOCAL_MEMBERS.sort((a, b) => (a.rank || 999) - (b.rank || 999)));
         } else {
-          const combined = [...(data || []), ...LOCAL_MEMBERS];
+          // Deduplicate by name, prioritizing LOCAL_MEMBERS over Supabase data
+          const membersMap = new Map();
+          // First add database members
+          if (data) {
+            data.forEach(m => membersMap.set(m.name.toLowerCase().trim(), m));
+          }
+          // Then overwrite with local members (so local changes win)
+          LOCAL_MEMBERS.forEach(m => membersMap.set(m.name.toLowerCase().trim(), m));
+          
+          const combined = Array.from(membersMap.values());
           const EXCLUDED_NAMES = ["Vaibhav Dhepe", "Ganesh Wadhe"];
           
-          // Filter out excluded members and those who might be duplicates
+          // Filter out excluded members
           const filtered = combined.filter(m => !EXCLUDED_NAMES.includes(m.name));
           
           // Sort by rank to ensure consistent team ordering
@@ -84,7 +96,7 @@ export default function MembersPage() {
 
   return (
     <div
-      className="min-h-screen selection:bg-indigo-500/30 font-sans pb-32"
+      className="min-h-screen font-sans pb-32"
       style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       {/* Ambient Background */}
@@ -182,8 +194,25 @@ export default function MembersPage() {
           </div>
         ) : (
           <div className="space-y-32">
-            {Object.entries(groupedMembers).map(
-              ([department, deptMembers], index) => (
+            {Object.entries(groupedMembers)
+              .sort(([deptA], [deptB]) => {
+                const ORDER = [
+                  "CORE",
+                  "EVENTS",
+                  "TECHNICAL",
+                  "SPONSOR AND MARKETING",
+                  "SOCIAL MEDIA AND DIGITAL",
+                  "PR",
+                  "DOCUMENTATION"
+                ];
+                const indexA = ORDER.indexOf(deptA.toUpperCase());
+                const indexB = ORDER.indexOf(deptB.toUpperCase());
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
+                return deptA.localeCompare(deptB);
+              })
+              .map(([department, deptMembers], index) => (
                 <motion.div
                   key={department}
                   initial={{ opacity: 0, y: 50 }}
@@ -226,7 +255,7 @@ export default function MembersPage() {
                     <AnimatePresence>
                       {deptMembers.map((member) => (
                         <motion.div
-                          key={member.id}
+                          key={member.name}
                           variants={itemVariants}
                           className="group relative rounded-2xl p-6 transition-all duration-500 flex flex-col glass glass-hover glow-border card-shine"
                         >
@@ -273,6 +302,25 @@ export default function MembersPage() {
                             >
                               {member.role}
                             </p>
+
+                            {/* Social Links */}
+                            <div className="flex gap-3 mt-4 z-10 relative">
+                              {member.instagram && member.instagram.trim() !== "" && (
+                                <a href={member.instagram.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
+                                  <Instagram className="w-5 h-5" />
+                                </a>
+                              )}
+                              {member.linkedin && member.linkedin.trim() !== "" && (
+                                <a href={member.linkedin.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
+                                  <Linkedin className="w-5 h-5" />
+                                </a>
+                              )}
+                              {member.github && member.github.trim() !== "" && (
+                                <a href={member.github.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-gray-400 transition-all">
+                                  <Github className="w-5 h-5" />
+                                </a>
+                              )}
+                            </div>
                           </div>
 
                           {/* Decorative UI line */}

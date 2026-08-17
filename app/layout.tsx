@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
-import EventPopup from "@/components/EventPopup";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,7 +30,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('ecell-theme') || 'dark';
+                  document.documentElement.className = theme;
+                } catch (e) {}
+              })()
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased min-h-screen flex flex-col`}
         style={{
@@ -40,7 +53,6 @@ export default function RootLayout({
           color: "var(--text-primary)",
         }}
       >
-        <EventPopup />
         <ThemeProvider>
           <AuthProvider>
             <Navbar />
