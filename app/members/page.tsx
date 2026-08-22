@@ -198,7 +198,7 @@ export default function MembersPage() {
               .sort(([deptA], [deptB]) => {
                 const ORDER = [
                   "CORE",
-                  "EVENTS",
+                  "EVENT MANAGEMENT",
                   "TECHNICAL",
                   "SPONSOR AND MARKETING",
                   "SOCIAL MEDIA AND DIGITAL",

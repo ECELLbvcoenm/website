@@ -21,6 +21,7 @@ export default function Navbar() {
     { name: "Events", href: "/events" },
     { name: "Sponsors", href: "/sponsors" },
     { name: "Members", href: "/members" },
+    { name: "NEC", href: "/nec" },
     { name: "Join Team", href: "/join" },
   ];
 
