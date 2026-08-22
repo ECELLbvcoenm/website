@@ -5,11 +5,11 @@ export const LOCAL_MEMBERS = [
   { id: "c3", name: "Atharva Deokar", role: "SECRETARY", department: "CORE", rank: 103, instagram: "https://www.instagram.com/atharvv.19?igsh=eXZiaDM1YnE2OXV3", linkedin: "https://www.linkedin.com/in/atharva-deokar-3993a01ba?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
   { id: "c4", name: "Sneha Bhosale", role: "TREASURER", department: "CORE", rank: 104, instagram: "https://www.instagram.com/__sneha__77746?igsh=MXUwcm5yZHl6aGViMw==&igsi=MXUwcm5yZHl6aGViMw==", linkedin: "https://www.linkedin.com/in/sneha-bhosale-57a52b351?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
 
-  // EVENTS
-  { id: "e1", name: "Vaishnavi Lagad", role: "EVENT HEAD", department: "EVENTS", rank: 201, instagram: "https://www.instagram.com/vaishnavi_2312?igsh=cDlzczR4bGhrODE1", linkedin: "https://www.linkedin.com/in/vaishnavi-lagad-3b9873328?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
-  { id: "e2", name: "Harshada Atpadkar", role: "JOINT EVENT HEAD", department: "EVENTS", rank: 202, instagram: "https://www.instagram.com/harshada.atp?igsh=cWxvZW1zdGdyZ2gx", linkedin: "https://www.linkedin.com/in/harshada-atpadkar-190526296", github: "" },
-  { id: "e3", name: "Diksha Patil", role: "EVENT MEMBER", department: "EVENTS", rank: 203, instagram: "", linkedin: "", github: "" },
-  { id: "e4", name: "Tanishka", role: "EVENT MEMBER", department: "EVENTS", rank: 204, instagram: "", linkedin: "", github: "" },
+  // EVENT MANAGEMENT
+  { id: "e1", name: "Vaishnavi Lagad", role: "EVENT HEAD", department: "EVENT MANAGEMENT", rank: 201, instagram: "https://www.instagram.com/vaishnavi_2312?igsh=cDlzczR4bGhrODE1", linkedin: "https://www.linkedin.com/in/vaishnavi-lagad-3b9873328?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
+  { id: "e2", name: "Harshada Atpadkar", role: "JOINT EVENT HEAD", department: "EVENT MANAGEMENT", rank: 202, instagram: "https://www.instagram.com/harshada.atp?igsh=cWxvZW1zdGdyZ2gx", linkedin: "https://www.linkedin.com/in/harshada-atpadkar-190526296", github: "" },
+  { id: "e3", name: "Diksha Patil", role: "EVENT MEMBER", department: "EVENT MANAGEMENT", rank: 203, instagram: "", linkedin: "", github: "" },
+  { id: "e4", name: "Tanishka", role: "EVENT MEMBER", department: "EVENT MANAGEMENT", rank: 204, instagram: "", linkedin: "", github: "" },
 
   // TECHNICAL
   { id: "t1", name: "Ayush Kamble", role: "TECH HEAD", department: "TECHNICAL", rank: 301, instagram: "https://www.instagram.com/ayush_kamble2525?igsh=bjN0N2E5bmkycmFi", linkedin: "https://www.linkedin.com/in/ayush-kamble2026?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
@@ -23,6 +23,8 @@ export const LOCAL_MEMBERS = [
   { id: "sm1", name: "Pragati Tatuskar", role: "SPONSOR HEAD", department: "SPONSOR AND MARKETING", rank: 401, instagram: "", linkedin: "", github: "" },
   { id: "sm2", name: "Gauri Patil", role: "MARKETING HEAD", department: "SPONSOR AND MARKETING", rank: 402, instagram: "", linkedin: "", github: "" },
   { id: "sm3", name: "Devashish Mundade", role: "JOINT MARKETING HEAD", department: "SPONSOR AND MARKETING", rank: 403, instagram: "https://www.instagram.com/devaashishmundada?igsh=MXAzMmR1dTl3Y3pvbQ==", linkedin: "https://www.linkedin.com/in/devashish-mundade-58b869267?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
+  { id: "sm4", name: "Manas Mhatre", role: "SPONSOR MEMBER", department: "SPONSOR AND MARKETING", rank: 404, instagram: "", linkedin: "", github: "" },
+  { id: "sm5", name: "Dhruv", role: "SPONSOR MEMBER", department: "SPONSOR AND MARKETING", rank: 405, instagram: "", linkedin: "", github: "" },
 
   // SOCIAL MEDIA AND DIGITAL
   { id: "smd1", name: "Shreya Jadhav", role: "SOCIAL MEDIA HEAD", department: "SOCIAL MEDIA AND DIGITAL", rank: 501, instagram: "https://www.instagram.com/_shreyaaa_05_?igsh=Z2xzcWlxcndkdDc=", linkedin: "https://www.linkedin.com/in/shreya-jadhav-168b2939b?utm_source=share_via&utm_content=profile&utm_medium=member_android", github: "" },
