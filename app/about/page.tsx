@@ -54,7 +54,7 @@ export default function AboutPage() {
                   The Entrepreneurship Cell of Bharati Vidyapeeth College of Engineering, Navi Mumbai, was established with a singular vision: to transform a campus of students into a thriving hub of innovators.
                 </p>
                 <p>
-                  Over the years, we have evolved from hosting basic awareness seminars to running high-impact execution programs. We don't just talk about entrepreneurship; we actively foster an environment where students can build, fail, and scale.
+                  Over the years, we have evolved from hosting basic awareness seminars to running high-impact execution programs. We don&apos;t just talk about entrepreneurship; we actively foster an environment where students can build, fail, and scale.
                 </p>
               </div>
             </div>

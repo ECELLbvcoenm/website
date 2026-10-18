@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, Building2, Megaphone, Terminal, Landmark } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 export default function JoinPage() {
   const [step, setStep] = useState(1);
@@ -33,11 +32,18 @@ export default function JoinPage() {
     if (!formData.motivation) { setError("Please provide your motivation."); return; }
     setIsSubmitting(true); setError(null);
     try {
-      const { error: dbError } = await supabase.from("applications").insert(formData);
-      if (dbError) throw dbError;
+      const response = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        const result = await response.json() as { message?: string };
+        throw new Error(result.message || "Please try again later.");
+      }
       setStep(4);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Please try again later.");
     } finally {
       setIsSubmitting(false);
     }

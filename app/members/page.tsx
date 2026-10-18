@@ -23,6 +23,18 @@ function getMemberImagePath(name: string) {
   return `/images/members/${name.toLowerCase().replace(/\s+/g, "_")}.jpg`;
 }
 
+function localMemberImage(path?: string) {
+  return path && /^\/images\/members\/[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp|avif)$/.test(path) ? path : null;
+}
+
+function socialLink(value: string | undefined, host: string) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && (url.hostname === host || url.hostname === `www.${host}`) ? url.href : null;
+  } catch { return null; }
+}
+
 export default function MembersPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,8 +44,8 @@ export default function MembersPage() {
       setIsLoading(true);
       try {
         const { data, error } = await supabase
-          .from("members")
-          .select("*")
+          .from("public_members")
+          .select("id,name,role,department,image_url,rank,instagram,linkedin,github")
           .order("rank", { ascending: true })
           .order("name", { ascending: true });
 
@@ -267,9 +279,9 @@ export default function MembersPage() {
                               color: "var(--text-muted)",
                             }}
                           >
-                            {member.image_url ? (
+                            {localMemberImage(member.image_url) ? (
                               <img
-                                src={member.image_url}
+                                src={localMemberImage(member.image_url)!}
                                 alt={member.name}
                                 className="absolute inset-0 w-full h-full object-cover"
                               />
@@ -305,18 +317,18 @@ export default function MembersPage() {
 
                             {/* Social Links */}
                             <div className="flex gap-3 mt-4 z-10 relative">
-                              {member.instagram && member.instagram.trim() !== "" && (
-                                <a href={member.instagram.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
+                              {socialLink(member.instagram, "instagram.com") && (
+                                <a href={socialLink(member.instagram, "instagram.com")!} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
                                   <Instagram className="w-5 h-5" />
                                 </a>
                               )}
-                              {member.linkedin && member.linkedin.trim() !== "" && (
-                                <a href={member.linkedin.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
+                              {socialLink(member.linkedin, "linkedin.com") && (
+                                <a href={socialLink(member.linkedin, "linkedin.com")!} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
                                   <Linkedin className="w-5 h-5" />
                                 </a>
                               )}
-                              {member.github && member.github.trim() !== "" && (
-                                <a href={member.github.trim()} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-gray-400 transition-all">
+                              {socialLink(member.github, "github.com") && (
+                                <a href={socialLink(member.github, "github.com")!} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-gray-400 transition-all">
                                   <Github className="w-5 h-5" />
                                 </a>
                               )}

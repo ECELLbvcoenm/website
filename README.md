@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+For Supabase access controls, the joining-form server environment, migration
+order, and incident review steps, see [supabase/README.md](supabase/README.md)
+and [SECURITY_AUDIT.md](SECURITY_AUDIT.md). The SQL migrations must be reviewed
+against the live schema before application.
+
 ## Getting Started
 
 First, run the development server:

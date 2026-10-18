@@ -3,13 +3,7 @@ import { pastEvents } from "@/lib/events";
 import EventDetailClient from "./EventDetailClient";
 
 type PageProps = {
-  params:
-    | {
-        id: string;
-      }
-    | Promise<{
-    id: string;
-      }>;
+  params: Promise<{ id: string }>;
 };
 
 async function resolveEventId(params: PageProps["params"]) {

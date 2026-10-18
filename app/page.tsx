@@ -44,7 +44,7 @@ export default function Home() {
     async function fetchData() {
       try {
         const { data } = await supabase
-          .from("members")
+          .from("public_members")
           .select("id, name, role, rank")
           .order("rank", { ascending: true })
           .order("name", { ascending: true });
