@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/application*.test.mjs",
+    "test": "node --test tests/application*.test.mjs tests/public-listings.test.mjs",
     "typecheck": "tsc --noEmit",
-    "test:bundle": "node --test tests/bundle.test.mjs"
+    "test:bundle": "node --test tests/bundle.test.mjs",
+    "test:sql:guards": "node --test tests/migration-guards.local.test.mjs",
+    "test:supabase": "node --test tests/supabase.e2e.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.1",

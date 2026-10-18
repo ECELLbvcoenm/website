@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, ChevronRight, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { memberImagePath } from "@/lib/member-image";
 import { pastEvents } from "@/lib/events";
-import { LOCAL_MEMBERS } from "@/lib/localMembers";
 import ScrollReveal from "@/components/ScrollReveal";
 
 type Member = {
@@ -22,10 +22,6 @@ type EventItem = {
   date: string;
   shortDescription: string;
 };
-
-function getMemberImagePath(name: string) {
-  return `/images/members/${name.toLowerCase().replace(/\s+/g, "_")}.jpg`;
-}
 
 function parseEventDate(rawDate: string) {
   const monthYearMatch = rawDate.match(/([a-zA-Z]+)\s+(\d{4})/);
@@ -49,9 +45,11 @@ export default function Home() {
           .order("rank", { ascending: true })
           .order("name", { ascending: true });
 
-        setMembers([...(data ?? []), ...LOCAL_MEMBERS]);
+        setMembers((data ?? []).filter((member) =>
+          typeof member.name === "string" && member.name.trim().length > 0 && member.name.length <= 120 &&
+          typeof member.role === "string" && member.role.length <= 120));
       } catch {
-        setMembers(LOCAL_MEMBERS);
+        setMembers([]);
       }
 
       setEvents(pastEvents);
@@ -331,14 +329,16 @@ export default function Home() {
                 style={{ borderLeftColor: "var(--text-accent)" }}
               >
                 <div className="aspect-square rounded-xl overflow-hidden mb-4 relative" style={{ background: "var(--bg-card)" }}>
-                  <img
-                    src={getMemberImagePath(member.name)}
-                    alt={member.name}
-                    className="absolute inset-0 h-full w-full object-cover z-10 grayscale saturate-0 opacity-85 transition-all duration-500 group-hover:grayscale-0 group-hover:saturate-100 group-hover:opacity-100"
-                    onError={(event) => {
-                      event.currentTarget.style.display = "none";
-                    }}
-                  />
+                  {memberImagePath(member.name) && (
+                    <img
+                      src={memberImagePath(member.name)!}
+                      alt={member.name}
+                      className="absolute inset-0 h-full w-full object-cover z-10 grayscale saturate-0 opacity-85 transition-all duration-500 group-hover:grayscale-0 group-hover:saturate-100 group-hover:opacity-100"
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
+                  )}
                   <div
                     className="absolute inset-0 flex items-center justify-center text-3xl font-bold z-0"
                     style={{ color: "var(--text-muted)" }}

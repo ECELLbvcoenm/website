@@ -45,18 +45,16 @@ test("client form does not import a privileged client or write directly to Supab
 
 test("SQL denies anonymous table writes and isolates applicant reads", () => {
   const migration = readFileSync(new URL("../supabase/migrations/202610180001_lock_down_public_data.sql", import.meta.url), "utf8");
-  for (const table of ["members", "projects", "applications"]) {
+  for (const table of ["members", "applications"]) {
     assert.match(migration, new RegExp(`alter table public\\.${table} enable row level security`));
   }
-  assert.match(migration, /revoke all on public\.members, public\.projects, public\.applications from public, anon, authenticated/);
+  assert.match(migration, /revoke all on public\.members, public\.applications from public, anon, authenticated/);
   assert.doesNotMatch(migration, /grant .* on public\.applications to anon/i);
   assert.match(migration, /applications_admin_select/);
   assert.match(migration, /app_private\.is_admin\(\)/);
   assert.match(migration, /create view public\.public_members/);
   assert.match(migration, /from public\.members where is_public = true/);
-  assert.match(migration, /create view public\.public_projects/);
-  assert.match(migration, /from public\.projects where is_public = true/);
-  for (const table of ["members", "projects", "applications"]) {
+  for (const table of ["members", "applications"]) {
     for (const operation of ["select", "insert", "update", "delete"]) {
       assert.match(migration, new RegExp(`create policy ${table}_admin_${operation} on public\\.${table}`));
     }
@@ -71,4 +69,9 @@ test("submission function is service-only and enforces atomic rate and duplicate
   assert.match(migration, /rate_limited/);
   assert.match(migration, /duplicate/);
   assert.match(migration, /insert into public\.applications \(full_name, email, contact_number, department, motivation\)/);
+});
+
+test("base migration leaves database-wide future-function defaults unchanged", () => {
+  const migration = readFileSync(new URL("../supabase/migrations/202610180000_create_base_tables.sql", import.meta.url), "utf8");
+  assert.doesNotMatch(migration, /alter default privileges for role postgres\s+revoke execute on functions/i);
 });

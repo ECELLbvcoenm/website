@@ -1,90 +1,76 @@
-# Supabase security rollout
+# Supabase existing-members migration
 
-The repository has no authoritative production schema or database connection. These
-versioned migrations are one-time changes, not rerunnable SQL scripts. Run
-`preflight.sql` first and compare the complete output with the migration assumptions.
-Migration `001` fails on missing columns, unexpected table owners/grants, existing
-target policies/views/schema/constraints, or legacy rows incompatible with its new
-checks. Migration `002` fails on target function/table collisions. Inspect triggers,
-foreign keys, existing functions, storage buckets, exposed schemas, and custom role
-memberships separately. Adapt and retest migrations in isolation if any assumption
-differs. Neither migration has been tested against the production schema.
+These scripts target the reported production shape: only `public.members` exists, with UUID `id` primary key and exactly `name`, `role`, `department`, `image_url`, `linkedin_url`, and integer `rank`. They preserve that table, its rows, and every UUID. They do not drop data or objects. **No production SQL has been run from this repository.** Supabase Free has no verified recoverable backup for this project.
 
-## Order
+## Before any production change
 
-1. Back up production data and preserve relevant audit logs. In a separate test
-   Supabase project restored from a sanitized, production-like schema, apply
-   `202610180001_lock_down_public_data.sql`, then
-   `202610180002_application_submission.sql`. Run `tests/rls.integration.sql`,
-   concurrent submission checks, and a real form submission through a test deployment.
-   `tests/rls.fixture.integration.sql` is specific to the synthetic local fixture.
-   Confirm actual Auth JWTs and PostgREST behavior, which the local PostgreSQL fixture
-   cannot test.
-2. Review every existing member row privately. Migration `001` sets new
-   `members.is_public` values to false. Publish only approved IDs after migration;
-   the checked-in local member roster keeps the page populated during review.
-   `projects.is_public` also defaults to false; its current page is static.
-3. In production, run `preflight.sql` read-only and resolve differences. Configure
-   `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `APPLICATION_HASH_SECRET` only
-   in Vercel's server environment; configure the public URL and anon key separately.
-   Verify the service role key has never entered a client bundle.
-4. Apply migration `001` then `002` as the trusted `postgres` role. Existing browser
-   form writes will stop at `001`; deploy the updated code promptly in a coordinated
-   window. Do not expose the new API route before its RPC and server secrets exist.
-5. Add only verified administrator Auth user IDs to `app_private.admin_users` using
-   the SQL editor, after checking identity through a trusted channel. Example:
-   `insert into app_private.admin_users(user_id) values ('<verified-auth-user-uuid>');`
-   Keep this table out of exposed schemas. Verify normal authenticated users remain
-   unable to change the allowlist.
-6. Publish approved member/project IDs, verify public views, test one real form
-   submission, and verify anon/authenticated denials through the Data API. Monitor
-   Supabase and Vercel logs for errors and unusual volume without logging applicant PII.
+1. In **Database → Backups**, check whether this particular project offers a downloadable or restorable backup. Supabase documents managed daily backups for paid plans, not Free. Do not infer backup availability from an empty table. If none exists, `supabase/recovery_reference.sql` can capture the reported table's catalog details and member rows in SQL Editor; save its results privately, including a CSV of the rows. This is only a recovery reference, **not** a full database backup. Preserve incident and access logs separately. A true logical backup and test restore are preferable if available through an already approved database-export process.
+2. In the Supabase Dashboard select project `gucesqkwizbndffsvqtk` and verify the project reference and URL. Use **SQL Editor → New query**. Run the *entire* `supabase/preflight.sql` read-only. SQL Editor may display only the last result set: the last statement now returns **one row with multiple JSON columns**. Expand or export every column and save the row privately. If the result has only `members_count` and `original_member_fields_fingerprint`, the old script was run; use the updated file. Confirm the migration role is `postgres`, `auth.users` exists, only the reported `members` table is present in `public`, its owner is `postgres`, its seven columns/types and sole UUID primary key match, and there are no conflicting triggers, policies, views, functions, indexes, rules, or `app_private` schema. Member rows may exist and must be preserved. Review effective table, column, schema, sequence, and function privileges, default grants, and role memberships. Stop on any mismatch.
 
-The migrations do not delete application or member data. They are not safely
-reversible with a generic DOWN script: RLS/grants/views/publication flags and
-application checks change access semantics, and forms submitted after rollout
-would be lost by a blind restore. Keep a tested backup/PITR recovery plan. If
-rollout fails, first disable the public join route at the edge or redeploy a
-known compatible version; restore from a snapshot or construct a reviewed
-forward migration, preserving submissions received since the snapshot.
+The final preflight row should report `members_count=0` and `original_member_fields_fingerprint=d751713988987e9331980363e24189ce` only if the table is still empty. In `starting_shape`, expect `members_columns=department:text,id:uuid,image_url:text,linkedin_url:text,name:text,rank:integer,role:text`, `members_owner=postgres`, `members_constraints=1`, `members_id_primary_key_count=1`, and all absence flags true. In `relations`, expect only the existing `public.members` application relation, with RLS disabled before migration; Supabase or extension objects in `public` require individual review. Expect no application policies, functions, user triggers, extra member indexes/rules, or objects in `app_private`. Broad `anon` and `authenticated` member rights are expected **before** migration and must disappear afterward. Inspect `table_privileges`, `column_grants`, `schema_privileges`, `sequence_privileges`, `functions`, `default_privileges`, `default_acl_grants`, and `role_memberships` for unexpected or inherited rights; a missing ACL (`null`) does not mean no effective rights. Migration 000 changes only `postgres` defaults. If `default_acl_grants` shows global `postgres` table or sequence access for `PUBLIC`, `anon`, or `authenticated`, stop: a per-schema revoke cannot remove it. No database-wide future-function default is changed; the application functions receive explicit execution grants. Existing `supabase_admin` defaults remain unchanged and need separate review if that role will create application objects. `policies` includes `storage` policies and `storage_relations` lists Storage objects. `storage_buckets.rows_xml` lists `id`, `name`, and `public` when `storage.buckets` is selectable; if absent or inaccessible, inspect **Storage → Buckets** and the Storage policies in Dashboard manually. For each bucket, check public/private setting and `storage.objects` SELECT/INSERT/UPDATE/DELETE policies. The repository has no Storage API usage, but SQL catalog output alone cannot prove bucket contents or policy behavior. Also inspect any other exposed API schemas in **Project Settings → API**, since this query targets `public`, `app_private`, and `storage`.
+3. In an isolated Supabase project, reproduce the seven-column members table and its grants (the local fixture includes a legacy row with an offsite image URL). Apply the **exact same migration text** below, then run real Auth/PostgREST and test-deployment checks described later. Local PostgreSQL role simulation alone cannot verify Supabase JWT handling or the browser flow. With a disposable local PostgreSQL Docker container, set `ECELL_LOCAL_DB_CONTAINER` to its name and run `npm run test:sql:guards`; those tests create only local throwaway databases.
 
-The `public_members` and `public_projects` views are intentionally owner-executed,
-with a fixed list of public fields and `is_public` filter. They bypass base-table
-RLS by design; never add private columns or remove that filter. The underlying
-tables have RLS enabled and no direct public grants. The migration refuses to
-replace existing target policies or views because their semantics may differ.
-Apply as the trusted database owner and verify view ownership, `security_invoker`
-settings, function execution ACLs, and grants afterward.
+## SQL Editor execution order
 
-Admin CRUD is available through Supabase's authenticated API only to user IDs
-in the private allowlist. The database verifies the signed JWT and the allowlist
-for every operation. There is no admin UI or admin endpoint in this repository.
-Use a trusted database administration channel or build a server-verified admin
-UI separately. An ordinary site sign-in grants no administrative rights.
+Use **one new SQL Editor query per file**, paste the entire file, and run as `postgres`. Each file is one transaction; a guard failure rolls back that file. Stop on an error, inspect the resulting schema, and do not skip ahead.
+Keep the executed file names and timestamps in your rollout record: direct SQL Editor changes do not populate the Supabase CLI migration history.
 
+1. `supabase/migrations/202610180000_create_base_tables.sql` — validates the exact existing `members` shape and lack of target objects; immediately enables members RLS and removes anon/authenticated table and column grants, then creates only the `applications` table with RLS and no public grants. It removes broad `postgres` defaults for future `public` tables and sequences only. Function defaults and `supabase_admin` defaults are unchanged. It refuses global postgres table/sequence grants that a per-schema revoke cannot remove. It never retypes, rewrites, or recreates `members`. The static projects page requires no database table.
+2. `supabase/migrations/202610180001_lock_down_public_data.sql` — checks both tables; creates the private Auth UUID admin allowlist; adds `is_public=false` to members; revokes table and column ACLs; enables RLS; adds admin policies, validated input constraints, and a narrow owner-executed public member view. Existing members remain unpublished until a verified administrator explicitly reviews and publishes them. Existing offsite image URLs stay in unpublished rows; the public view hides them, and a `NOT VALID` check rejects unsafe new or updated rows. An admin must replace an unsafe legacy URL before updating that member. The member view maps `linkedin_url` to `linkedin` and returns null for unsupported `instagram`/`github` fields to preserve the page's data contract.
+3. `supabase/migrations/202610180002_application_submission.sql` — checks applications columns, constraints, RLS, and anonymous grants; creates the service-role-only submission RPC and private rate-limit table. Anonymous clients cannot directly write or list applications. The server API calls the RPC, which validates input and serializes rate/duplicate checks.
+4. `supabase/migrations/202610180003_restrict_service_application_access.sql` — revokes any direct `service_role` table and column grants on `public.applications`. It preserves `service_role` EXECUTE on `public.submit_application`. The transaction fails and rolls back if inherited or `PUBLIC` rights still give `service_role` effective direct access. It does not change `public.members` grants.
 
-The form's server route uses a service-role key only to invoke one restricted
-database function. Keep that key and `APPLICATION_HASH_SECRET` in Vercel server
-environment variables, never in `NEXT_PUBLIC_*`. The function applies atomic
-IP limits and email deduplication before inserting five explicit fields.
-IP/email hashes are retained in `app_private.submission_attempts`; set a data
-retention policy for this operational table. The IP cap is a cost/abuse guard,
-not identity proof: changing IP and email bypasses it. Verify that Vercel
-overwrites `x-vercel-forwarded-for` in the deployed request path; another proxy
-or host requires an equivalent trusted address source.
+Run `supabase/preflight.sql` again after each file and inspect the differences. Its starting-shape flags intentionally change after 000 and 001. Before continuing between files, check:
 
-## Incident review
+- **After 000:** `applications` exists as a postgres-owned table with RLS enabled and no anon/authenticated table or column privileges; its identity sequence has no public/API-role privileges. `projects` remains absent. `members` still has its original seven columns and its `members_count` and `original_member_fields_fingerprint` match the first preflight, but RLS is now enabled and anon/authenticated table and column privileges are gone. No view, policy, or private schema exists yet. **Public member listings remain unavailable until 001 creates the view and compatible site code is deployed**; coordinate these steps. The `postgres` default ACLs must show no broad public-schema table/sequence grants. Stop if any value differs.
+- **After 001:** both base tables have RLS enabled; anonymous table and column access, including `TRUNCATE`, is absent. Every existing member has `is_public=false`, the original member fingerprint is unchanged, and the public member view exposes only the documented columns. The `members_local_image_url` check may be `NOT VALID` for legacy rows. `app_private.admin_users` has no public access; `app_private.is_admin()` is postgres-owned, a security definer with an empty search path, and executable only by `authenticated`. No submission RPC exists yet.
+- **After 002:** `app_private.submission_attempts` and its identity sequence have no public/API-role grants; the table has RLS. `public.submit_application` is postgres-owned, a security definer with an empty search path, executable by `service_role` but not by `anon` or `authenticated`. Anonymous application base-table access remains absent. Check the exact signature and confirm no extra overload or unexpected grant was created.
+- **After 003:** Run the read-only `supabase/postflight.sql` as a separate SQL Editor query and inspect its complete JSON result. `service_role_has_no_direct_applications_access` must be true, every `service_role` table and column privilege on `public.applications` must be false, and RPC execute must remain true. The report also shows effective `service_role` member rights; **do not revoke them yet**. A production preflight has not established whether those grants support an external member-management workflow. Check the member grants and any authorized clients first. The repository's public pages use only `public_members`; if no other workflow needs direct `service_role` member access, a separately reviewed migration can revoke its table and column grants and assert effective denial in the same way as 003. An inherited grant causes 003 to roll back rather than weakening another role.
 
-Preserve database audit/API logs, Vercel logs, deployment history, Auth logs,
-and a private snapshot of affected rows if available. Compare write timestamps,
-Supabase API logs and JWT role, source IP, any service-role usage, and deployment
-logs before attributing the unfamiliar member records. This repository has no
-member write path; RLS being disabled and prior grants could have allowed direct
-REST writes with a public key, but that is a hypothesis until logs/grants confirm it.
-The site previously rendered database-provided `image_url` values directly.
+Default ACLs apply when an object is created; they do not regrant rights to an existing table after 003. Inspect the `default_acl_grants` and `role_memberships` fields of `supabase/preflight.sql` alongside the effective postflight output. Migration 003 does not change any default or inherited role grant. Function default privileges are unchanged. The application functions in 001 and 002 explicitly revoke inherited `PUBLIC` execution and grant only the intended roles; review execution grants on any future application function separately. No Supabase-managed object or `supabase_admin` default is modified.
 
-If a service-role or secret key is found in a client bundle, commit history,
-logs, or another public location, rotate it in the Supabase dashboard and update
-Vercel after the database controls are tested. A publishable/anon key is intended
-to be public; its exposure alone is not a secret leak. Rotate credentials only
-as part of an approved, coordinated production change.
+For a targeted final check in SQL Editor:
+
+```sql
+select c.oid::regclass as object_name, c.relrowsecurity,
+       has_table_privilege('anon', c.oid, 'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') as anon_table_access,
+       has_any_column_privilege('anon', c.oid, 'SELECT,INSERT,UPDATE') as anon_column_access
+from pg_class c where c.oid in
+  ('public.members'::regclass,'public.applications'::regclass);
+select has_function_privilege('anon',
+  'public.submit_application(text,text,text,text,text,text,text)', 'EXECUTE') as anon_rpc,
+       has_function_privilege('authenticated',
+  'public.submit_application(text,text,text,text,text,text,text)', 'EXECUTE') as user_rpc,
+       has_function_privilege('service_role',
+  'public.submit_application(text,text,text,text,text,text,text)', 'EXECUTE') as service_rpc;
+select n.nspname, p.proname, pg_get_userbyid(p.proowner) as owner,
+       p.prosecdef, p.proconfig from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+where (n.nspname='public' and p.proname='submit_application')
+   or (n.nspname='app_private' and p.proname='is_admin');
+select table_name, column_name from information_schema.columns
+where table_schema='public' and table_name='public_members'
+order by table_name, ordinal_position;
+```
+
+Expected: both base tables have RLS on and no anon table/column access; RPC execution is false/false/true; functions are postgres-owned security definers with an empty search path; the public member view contains only documented fields. Also verify `app_private.admin_users` and `submission_attempts` have no public ACLs, the member view has `security_invoker=false`, `anon` and `authenticated` cannot inherit privileged database roles, and actual PostgREST requests behave as expected. SQL Editor executes as a privileged role and **cannot** alone prove anonymous JWT behavior. `tests/rls.integration.sql` contains additional transactional checks; adapt its administrator UUID only in a test project.
+
+## Administrator and application setup
+
+Create a real Supabase Auth user through the trusted Auth admin workflow. Verify the user's UUID in **Dashboard → Authentication → Users** and verify the intended person outside user-editable metadata. In SQL Editor as postgres:
+
+```sql
+insert into app_private.admin_users(user_id)
+values ('<verified-auth-user-uuid>');
+```
+
+Do not invent a UUID or expose `app_private` as an API schema. Ordinary Auth users receive no admin policy access. The repository currently has no admin UI; authorized admins can use trusted SQL Editor workflows or a separately reviewed server-side admin interface.
+
+Deploy compatible application code only after separate deployment approval. In **Vercel → Project → Settings → Environment Variables**, check the presence and environment scope of `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and a random 32+ character `APPLICATION_HASH_SECRET` as **server-only** variables; check `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` as the intended public variables. Do not paste their values into a review message. The server URL and public URL must refer to this same reviewed project. Follow `.env.example`; never use a `NEXT_PUBLIC_` prefix for secrets. The joining form posts to `/api/applications`, which validates JSON and calls the narrow RPC. The members page and homepage read only `public_members` in this code version; they show no member cards until an administrator explicitly publishes approved rows. The projects page uses static content and has no database table or public view.
+
+For isolated end-to-end checks, create distinct admin and ordinary Auth users, insert only the verified admin UUID into the test allowlist, and use a test deployment connected solely to that project. Run `npm run test:supabase` with the `ECELL_TEST_*` variables listed in `.env.example` and `ECELL_TEST_ACK=isolated-project`. The runner rejects the known production project and deployment URLs. It creates test records, so never run it against production. Verify `/join`, `/members`, `/projects`, form confirmation, direct anon denials, admin CRUD, RPC grants, concurrent rate limits, and bundle secret checks before requesting production deployment.
+
+## Recovery and limits
+
+There is no generic safe down migration. A failed file rolls back its own transaction, but successful earlier files remain. Stop and inspect on any failure. A later rollback requires a reviewed forward migration or a verified schema restore; restoring a snapshot after submissions begin can lose new applications, so reconcile them first. Keep the form unavailable at the edge while recovering. Do not disable RLS to make old browser writes work.
+
+Rate limiting uses server-derived IP and normalized-email HMACs. Changing IP and email can evade the limits; monitor and establish retention for the private attempt table. Confirm Vercel's forwarded IP header behavior on the deployed request path. Emptying suspicious member records does not establish who wrote them; preserve available logs.

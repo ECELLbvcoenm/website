@@ -30,10 +30,10 @@
 
 ## Reported database state and cause analysis
 
-The site owner reports RLS disabled on `members`, `projects`, and
-`applications`. This was not independently verified because the repository has
-no SQL schema, database credentials, or Supabase management access. If those
-tables had grants to `anon` or `authenticated`, Supabase's Data API could have
+The site owner reports RLS disabled and broad grants on `members`; the reported
+production schema has no `projects` or `applications` table. This was not
+independently verified because the repository has no production database access.
+If `members` has grants to `anon` or `authenticated`, Supabase's Data API could have
 allowed unauthorized reads and writes. Disabled RLS alone is not proof that a
 particular actor or request wrote the unfamiliar member records. The browser
 member listing accepted externally hosted image URLs, but the form never sent
@@ -72,3 +72,21 @@ PostgREST JWT handling, deployed request headers, or browser-to-database form fl
 Run `supabase/preflight.sql`, adapt to the actual schema, and complete the isolated
 Supabase project tests in `supabase/README.md` before production approval. No
 production database, settings, credentials, or deployment were changed.
+
+## Clean setup revision
+
+The owner now reports that only `public.members` remains, with a UUID primary
+key and seven specified columns; it has RLS disabled and broad
+public grants. This report is supplied evidence, not an independent live
+database observation. Migration `000` now checks that exact shape and creates
+only the missing `applications` table. The static projects page needs no table.
+Migration `001` secures
+the existing member table without changing UUIDs or deleting rows. Migration
+`002` checks the application schema before installing the restricted RPC. Member
+rows and UUIDs are preserved and start unpublished. All
+three files fail on unexpected target objects rather than replacing them.
+The final page review also found that a checked-in roster could display names
+even when database rows were unpublished. The homepage and members page now
+render only rows returned by `public_members`; an empty view produces no cards.
+Follow `supabase/README.md` for the only documented execution path and
+`supabase/TEST_REPORT.md` for verification limits.

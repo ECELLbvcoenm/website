@@ -1,8 +1,40 @@
 begin;
 
-do $$ begin
+do $$ declare actual_columns text; begin
   if current_user <> 'postgres' then raise exception 'Apply this migration as the trusted postgres role'; end if;
   if to_regnamespace('app_private') is null then raise exception 'Apply migration 001 first'; end if;
+  if to_regclass('public.applications') is null or
+     to_regprocedure('app_private.is_admin()') is null then
+    raise exception 'Migration 001 must create applications and admin authorization before 002';
+  end if;
+  if not exists (select 1 from pg_catalog.pg_class c
+                 where c.oid='public.applications'::regclass and c.relkind='r'
+                   and c.relrowsecurity and pg_catalog.pg_get_userbyid(c.relowner)='postgres') then
+    raise exception 'applications must be a postgres-owned table with RLS enabled';
+  end if;
+  select string_agg(column_name || ':' || data_type, ',' order by column_name)
+    into actual_columns from information_schema.columns
+    where table_schema='public' and table_name='applications';
+  if actual_columns <> 'contact_number:text,created_at:timestamp with time zone,department:text,email:text,full_name:text,id:bigint,internal_notes:text,motivation:text,status:text' or
+     not exists (select 1 from information_schema.columns
+                 where table_schema='public' and table_name='applications'
+                   and column_name='status' and is_nullable='NO'
+                   and column_default='''pending''::text') or
+     not exists (select 1 from pg_catalog.pg_constraint
+                 where conrelid='public.applications'::regclass
+                   and conname='applications_public_fields_valid' and convalidated) then
+    raise exception 'applications columns or validated input constraint do not match migration 001';
+  end if;
+  if not exists (select 1 from pg_catalog.pg_proc p
+                 where p.oid='app_private.is_admin()'::regprocedure
+                   and p.prosecdef and pg_catalog.pg_get_userbyid(p.proowner)='postgres'
+                   and 'search_path=""'=any(p.proconfig)) then
+    raise exception 'Admin authorization helper ownership or search path changed';
+  end if;
+  if pg_catalog.has_table_privilege('anon','public.applications','SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') or
+     pg_catalog.has_any_column_privilege('anon','public.applications','SELECT,INSERT,UPDATE') then
+    raise exception 'Anonymous direct application privileges remain';
+  end if;
   if to_regclass('app_private.submission_attempts') is not null or
      exists (select 1 from pg_catalog.pg_proc p
              join pg_catalog.pg_namespace n on n.oid=p.pronamespace
@@ -21,6 +53,20 @@ create index submission_attempts_ip_time on app_private.submission_attempts (ip_
 create index submission_attempts_email_time on app_private.submission_attempts (email_hash, created_at desc);
 alter table app_private.submission_attempts enable row level security;
 revoke all on app_private.submission_attempts from public, anon, authenticated;
+do $$ declare sequence_name text; g record; begin
+  sequence_name := pg_catalog.pg_get_serial_sequence('app_private.submission_attempts','id');
+  if sequence_name is null then raise exception 'submission_attempts.id identity sequence is missing'; end if;
+  for g in
+    select distinct case when acl.grantee=0 then 'PUBLIC' else pg_catalog.quote_ident(r.rolname) end as recipient
+    from pg_catalog.pg_class c
+    cross join lateral pg_catalog.aclexplode(coalesce(c.relacl,pg_catalog.acldefault('S',c.relowner))) acl
+    left join pg_catalog.pg_roles r on r.oid=acl.grantee
+    where c.oid=sequence_name::regclass and acl.grantee<>c.relowner
+  loop
+    if g.recipient is null then raise exception 'Unknown grant on submission_attempts identity sequence'; end if;
+    execute format('revoke all on sequence %s from %s',sequence_name,g.recipient);
+  end loop;
+end $$;
 
 -- Only the server's service role can call this narrow function. It never returns
 -- application rows or accepts privileged attributes. All checks and insertion

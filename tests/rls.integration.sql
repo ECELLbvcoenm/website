@@ -1,4 +1,4 @@
--- Run ONLY against an isolated test Supabase database, after both migrations.
+-- Run ONLY against an isolated test Supabase database, after migrations 000 through 003.
 -- psql -v ON_ERROR_STOP=1 -v admin_uid=<existing-auth-user-uuid> -f tests/rls.integration.sql
 -- All data writes in this script roll back. Use an existing test Auth user.
 begin;
@@ -15,14 +15,10 @@ do $$ begin
   end if;
   if has_table_privilege('anon', 'public.members', 'INSERT') or
      has_table_privilege('anon', 'public.members', 'UPDATE') or
-     has_table_privilege('anon', 'public.members', 'DELETE') or
-     has_table_privilege('anon', 'public.projects', 'INSERT') or
-     has_table_privilege('anon', 'public.projects', 'UPDATE') or
-     has_table_privilege('anon', 'public.projects', 'DELETE') then
-    raise exception 'anon has member/project write privileges';
+     has_table_privilege('anon', 'public.members', 'DELETE') then
+    raise exception 'anon has member write privileges';
   end if;
-  if not has_table_privilege('anon', 'public.public_members', 'SELECT') or
-     not has_table_privilege('anon', 'public.public_projects', 'SELECT') then
+  if not has_table_privilege('anon', 'public.public_members', 'SELECT') then
     raise exception 'public listing views are inaccessible';
   end if;
   if has_function_privilege('anon', 'public.submit_application(text,text,text,text,text,text,text)', 'EXECUTE') or
@@ -33,7 +29,6 @@ end $$;
 
 set local role anon;
 select count(*) from public.public_members;
-select count(*) from public.public_projects;
 do $$ begin
   begin
     perform count(*) from public.applications;
@@ -45,11 +40,6 @@ do $$ begin
     raise exception 'anon could insert a member';
   exception when insufficient_privilege then null;
   end;
-  begin
-    insert into public.projects default values;
-    raise exception 'anon could insert a project';
-  exception when insufficient_privilege then null;
-  end;
 end $$;
 reset role;
 
@@ -58,15 +48,13 @@ set local role authenticated;
 do $$ begin
   if app_private.is_admin() then raise exception 'ordinary user was treated as admin'; end if;
   if (select count(*) from public.applications) <> 0 or
-     (select count(*) from public.members) <> 0 or
-     (select count(*) from public.projects) <> 0 then
+     (select count(*) from public.members) <> 0 then
     raise exception 'ordinary user could read protected base rows';
   end if;
 end $$;
 -- RLS must return zero rows even though authenticated has a table SELECT grant.
 select count(*) from public.applications;
 select count(*) from public.members;
-select count(*) from public.projects;
 reset role;
 
 select set_config('request.jwt.claim.sub', :'admin_uid', true);
@@ -76,12 +64,25 @@ do $$ begin
 end $$;
 select count(*) from public.applications;
 select count(*) from public.members;
-select count(*) from public.projects;
 reset role;
 
 -- Service-only submission verifies field mapping, duplicate handling, and rate
 -- limiting in one transaction. These test emails and rows never commit.
 set local role service_role;
+do $$ begin
+  begin
+    perform count(*) from public.applications;
+    raise exception 'service_role read applications directly';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.applications (full_name,email,department,motivation)
+    values ('Direct Write','direct-write@example.invalid','PR',
+            'A valid application must use the restricted RPC instead.');
+    raise exception 'service_role inserted applications directly';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
 do $$
 declare result text; n int;
 begin

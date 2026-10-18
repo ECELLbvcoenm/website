@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { memberImagePath } from "@/lib/member-image";
 import { Loader2, Instagram, Linkedin, Github } from "lucide-react";
 
 type Member = {
@@ -16,12 +17,6 @@ type Member = {
   linkedin?: string;
   github?: string;
 };
-
-import { LOCAL_MEMBERS } from "@/lib/localMembers";
-
-function getMemberImagePath(name: string) {
-  return `/images/members/${name.toLowerCase().replace(/\s+/g, "_")}.jpg`;
-}
 
 function localMemberImage(path?: string) {
   return path && /^\/images\/members\/[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp|avif)$/.test(path) ? path : null;
@@ -50,31 +45,15 @@ export default function MembersPage() {
           .order("name", { ascending: true });
 
         if (error) {
-          console.warn("Notice: Database unreachable for members", error);
-          setMembers(LOCAL_MEMBERS.sort((a, b) => (a.rank || 999) - (b.rank || 999)));
+          setMembers([]);
         } else {
-          // Deduplicate by name, prioritizing LOCAL_MEMBERS over Supabase data
-          const membersMap = new Map();
-          // First add database members
-          if (data) {
-            data.forEach(m => membersMap.set(m.name.toLowerCase().trim(), m));
-          }
-          // Then overwrite with local members (so local changes win)
-          LOCAL_MEMBERS.forEach(m => membersMap.set(m.name.toLowerCase().trim(), m));
-          
-          const combined = Array.from(membersMap.values());
-          const EXCLUDED_NAMES = ["Vaibhav Dhepe", "Ganesh Wadhe"];
-          
-          // Filter out excluded members
-          const filtered = combined.filter(m => !EXCLUDED_NAMES.includes(m.name));
-          
-          // Sort by rank to ensure consistent team ordering
-          const sorted = filtered.sort((a, b) => (a.rank || 999) - (b.rank || 999));
-          setMembers(sorted);
+          setMembers((data ?? []).filter((member) =>
+            typeof member.name === "string" && member.name.trim().length > 0 && member.name.length <= 120 &&
+            typeof member.role === "string" && member.role.length <= 120 &&
+            typeof member.department === "string" && member.department.length <= 120));
         }
-      } catch (err) {
-        console.warn("Unexpected database error:", err);
-        setMembers(LOCAL_MEMBERS.sort((a, b) => (a.rank || 999) - (b.rank || 999)));
+      } catch {
+        setMembers([]);
       } finally {
         setIsLoading(false);
       }
@@ -204,6 +183,10 @@ export default function MembersPage() {
               Connecting to Registry...
             </p>
           </div>
+        ) : members.length === 0 ? (
+          <p className="text-center py-24 text-sm" style={{ color: "var(--text-secondary)" }}>
+            Member profiles will appear after approval.
+          </p>
         ) : (
           <div className="space-y-32">
             {Object.entries(groupedMembers)
@@ -287,14 +270,16 @@ export default function MembersPage() {
                               />
                             ) : (
                               <>
-                                <img
-                                  src={getMemberImagePath(member.name)}
-                                  alt={member.name}
-                                  className="absolute inset-0 w-full h-full object-cover"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = "none";
-                                  }}
-                                />
+                                {memberImagePath(member.name) && (
+                                  <img
+                                    src={memberImagePath(member.name)!}
+                                    alt={member.name}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = "none";
+                                    }}
+                                  />
+                                )}
                                 <span>{member.name[0]?.toUpperCase()}</span>
                               </>
                             )}
